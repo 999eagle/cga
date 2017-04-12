@@ -103,8 +103,6 @@ void App::StaticKeyCallback(GLFWwindow * window, int key, int scancode, int acti
 
 void App::KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 void App::FixedUpdate(const AppTime & time)
@@ -113,6 +111,8 @@ void App::FixedUpdate(const AppTime & time)
 
 void App::Update(const AppTime & time)
 {
+	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(this->window, GL_TRUE);
 }
 
 void App::Draw(const AppTime & time)
