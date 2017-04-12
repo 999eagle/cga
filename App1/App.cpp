@@ -54,11 +54,44 @@ bool App::Initialize(int width, int height, const char* title)
 
 void App::GameLoop()
 {
+	const uint64_t ticksPerSecond = glfwGetTimerFrequency();
+	const uint64_t targetFixedTicks = ticksPerSecond / 20;
+	const uint64_t maxTickDelta = ticksPerSecond / 10;
+	const int64_t tickEpsilon = ticksPerSecond / 4000;
+	uint64_t leftoverTicks = 0;
+	uint64_t currentTicks = 0;
+	uint64_t lastTicks = glfwGetTimerValue();
+	uint64_t tickDelta = 0;
+	uint64_t totalTicks = 0;
+
+	auto appTime = AppTime(ticksPerSecond);
+
 	while (!glfwWindowShouldClose(this->window))
 	{
 		glfwPollEvents();
-		glClearColor(0.5, 0.5, 0.5, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		currentTicks = glfwGetTimerValue();
+		tickDelta = currentTicks - lastTicks;
+		lastTicks = currentTicks;
+		// cap time delta to protect against very slow moments
+		if (tickDelta > maxTickDelta)
+			tickDelta = maxTickDelta;
+		leftoverTicks += tickDelta;
+		// remove errors less than 1/4000th of a second
+		if (abs((long long)(leftoverTicks - targetFixedTicks)) < tickEpsilon)
+			leftoverTicks = targetFixedTicks;
+		while (leftoverTicks >= targetFixedTicks)
+		{
+			leftoverTicks -= targetFixedTicks;
+			totalTicks += targetFixedTicks;
+			appTime.SetElapsedTicks(targetFixedTicks);
+			appTime.SetTotalTicks(totalTicks);
+			this->FixedUpdate(appTime);
+		}
+		appTime.SetElapsedTicks(tickDelta);
+		appTime.SetTotalTicks(totalTicks + leftoverTicks);
+		this->Update(appTime);
+		this->Draw(appTime);
+
 		glfwSwapBuffers(this->window);
 	}
 }
@@ -72,4 +105,18 @@ void App::KeyCallback(GLFWwindow * window, int key, int scancode, int action, in
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
+void App::FixedUpdate(const AppTime & time)
+{
+}
+
+void App::Update(const AppTime & time)
+{
+}
+
+void App::Draw(const AppTime & time)
+{
+	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
