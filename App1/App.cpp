@@ -58,10 +58,10 @@ void App::LoadContent()
 {
 	this->simpleShader = std::make_unique<Shader>("Shader\\simple.vs.glsl", "Shader\\simple.fs.glsl");
 
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-0.5, 0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(0.0, 1.0) });
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-0.5, -0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(0.0, 0.0) });
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(0.5, -0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(1.0, 0.0)  });
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(0.5, 0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(1.0, 1.0) });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-1.0, 0, -1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(0.0, 1.0) });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-1.0, 0, 1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(0.0, 0.0) });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(1.0, 0, 1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(1.0, 0.0)  });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(1.0, 0, -1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(1.0, 1.0) });
 	this->indices.push_back(0);
 	this->indices.push_back(1);
 	this->indices.push_back(2);
@@ -180,9 +180,14 @@ void App::Draw(const AppTime & time)
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 
-	glm::mat4 world, viewProj;
-	this->deferredRenderer->StartGeometryPass(world, viewProj);
+	glm::mat4 world, view, proj;
+	glm::vec3 cameraPos = glm::vec3(0.0, 1.0, 3.0), cameraDirection = glm::vec3(0.0, 0.0, -1.0);
+	view = glm::lookAt(cameraPos, cameraPos + cameraDirection, glm::vec3(0.0, 1.0, 0.0));
+	proj = glm::perspective(45.0, 1280.0 / 720.0, 0.1, 100.0);
+	GLint worldMatrixLocation = this->deferredRenderer->GetWorldMatrixLocation();
+	this->deferredRenderer->StartGeometryPass(proj * view);
 
+	glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(world));
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->textureId);
 	glUniform1i(this->deferredRenderer->GetDiffuseTextureLocation(), 0);

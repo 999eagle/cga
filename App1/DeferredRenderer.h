@@ -10,7 +10,8 @@ public:
 	DeferredRenderer(GLsizei width, GLsizei height);
 	~DeferredRenderer();
 	GLint GetDiffuseTextureLocation();
-	void StartGeometryPass(glm::mat4 world, glm::mat4 viewProj);
+	GLint GetWorldMatrixLocation();
+	void StartGeometryPass(glm::mat4 viewProj);
 	void EndGeometryPass();
 	void StartLightPass();
 	void EndLightPass();

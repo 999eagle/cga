@@ -52,14 +52,18 @@ GLint DeferredRenderer::GetDiffuseTextureLocation()
 	return this->geometryShader->GetUniformLocation("diffuseTexture");
 }
 
-void DeferredRenderer::StartGeometryPass(glm::mat4 world, glm::mat4 viewProj)
+GLint DeferredRenderer::GetWorldMatrixLocation()
+{
+	return this->geometryShader->GetUniformLocation("world");
+}
+
+void DeferredRenderer::StartGeometryPass(glm::mat4 viewProj)
 {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->geometryFrameBufferId);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	this->geometryShader->Apply();
-	glUniformMatrix4fv(this->geometryShader->GetUniformLocation("world"), 1, GL_FALSE, glm::value_ptr(world));
 	glUniformMatrix4fv(this->geometryShader->GetUniformLocation("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
 
 	glEnable(GL_DEPTH_TEST);
