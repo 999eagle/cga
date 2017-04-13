@@ -26,6 +26,7 @@ private:
 
 	std::unique_ptr<Shader> simpleShader;
 	std::vector<VertexPositionColor> vertices;
-	GLuint vbufferId, varrayId;
+	std::vector<GLushort> indices;
+	GLuint vbufferId, ebufferId, varrayId;
 };
 

@@ -56,12 +56,20 @@ void App::LoadContent()
 {
 	this->simpleShader = std::make_unique<Shader>("Shader\\simple.vs.glsl", "Shader\\simple.fs.glsl");
 
-	this->vertices.push_back(VertexPositionColor{ glm::vec3(0.0, 0.5, 0.0), glm::vec3(1.0, 0.0, 0.0) });
+	this->vertices.push_back(VertexPositionColor{ glm::vec3(-0.5, 0.5, 0.0), glm::vec3(1.0, 0.0, 0.0) });
 	this->vertices.push_back(VertexPositionColor{ glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.0, 1.0, 0.0) });
 	this->vertices.push_back(VertexPositionColor{ glm::vec3(0.5, -0.5, 0.0), glm::vec3(0.0, 0.0, 1.0) });
+	this->vertices.push_back(VertexPositionColor{ glm::vec3(0.5, 0.5, 0.0), glm::vec3(1.0, 1.0, 1.0) });
+	this->indices.push_back(0);
+	this->indices.push_back(1);
+	this->indices.push_back(2);
+	this->indices.push_back(0);
+	this->indices.push_back(2);
+	this->indices.push_back(3);
 
 	glGenVertexArrays(1, &this->varrayId);
 	glGenBuffers(1, &this->vbufferId);
+	glGenBuffers(1, &this->ebufferId);
 	glBindVertexArray(this->varrayId);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbufferId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPositionColor) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
@@ -69,6 +77,8 @@ void App::LoadContent()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionColor), (GLvoid*)(sizeof(VertexPositionColor::color)));
 	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebufferId);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * this->indices.size(), this->indices.data(), GL_STATIC_DRAW);
 	glBindVertexArray(0);
 }
 
@@ -76,6 +86,7 @@ void App::UnloadContent()
 {
 	glDeleteVertexArrays(1, &this->varrayId);
 	glDeleteBuffers(1, &this->vbufferId);
+	glDeleteBuffers(1, &this->ebufferId);
 }
 
 void App::GameLoop()
@@ -149,9 +160,12 @@ void App::Draw(const AppTime & time)
 {
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
 
 	this->simpleShader->Apply();
 	glBindVertexArray(this->varrayId);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);
 }
