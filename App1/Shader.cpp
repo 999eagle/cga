@@ -69,3 +69,8 @@ void Shader::Apply()
 {
 	glUseProgram(this->programId);
 }
+
+GLint Shader::GetUniformLocation(const GLchar * uniformName)
+{
+	return glGetUniformLocation(this->programId, uniformName);
+}

@@ -48,6 +48,8 @@ bool App::Initialize(int width, int height, const char* title)
 
 	glfwSetKeyCallback(window, App::StaticKeyCallback);
 
+	this->deferredRenderer = std::make_unique<DeferredRenderer>(width, height);
+
 	App::currentApp = this;
 	return true;
 }
@@ -56,10 +58,10 @@ void App::LoadContent()
 {
 	this->simpleShader = std::make_unique<Shader>("Shader\\simple.vs.glsl", "Shader\\simple.fs.glsl");
 
-	this->vertices.push_back(VertexPositionColor{ glm::vec3(-0.5, 0.5, 0.0), glm::vec3(1.0, 0.0, 0.0) });
-	this->vertices.push_back(VertexPositionColor{ glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.0, 1.0, 0.0) });
-	this->vertices.push_back(VertexPositionColor{ glm::vec3(0.5, -0.5, 0.0), glm::vec3(0.0, 0.0, 1.0) });
-	this->vertices.push_back(VertexPositionColor{ glm::vec3(0.5, 0.5, 0.0), glm::vec3(1.0, 1.0, 1.0) });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-0.5, 0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(0.0, 1.0) });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-0.5, -0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(0.0, 0.0) });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(0.5, -0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(1.0, 0.0)  });
+	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(0.5, 0.5, -0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec2(1.0, 1.0) });
 	this->indices.push_back(0);
 	this->indices.push_back(1);
 	this->indices.push_back(2);
@@ -67,19 +69,32 @@ void App::LoadContent()
 	this->indices.push_back(2);
 	this->indices.push_back(3);
 
+	glGenTextures(1, &this->textureId);
+	glBindTexture(GL_TEXTURE_2D, this->textureId);
+	int width, height;
+	unsigned char* image = SOIL_load_image("Content\\Texture\\wall.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	glGenVertexArrays(1, &this->varrayId);
 	glGenBuffers(1, &this->vbufferId);
 	glGenBuffers(1, &this->ebufferId);
 	glBindVertexArray(this->varrayId);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbufferId);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPositionColor) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionColor), (GLvoid*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPositionNormalTexture) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionNormalTexture), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionColor), (GLvoid*)(sizeof(VertexPositionColor::color)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionNormalTexture), (GLvoid*)(sizeof(GLfloat) * 3));
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexPositionNormalTexture), (GLvoid*)(sizeof(GLfloat) * 6));
+	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebufferId);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * this->indices.size(), this->indices.data(), GL_STATIC_DRAW);
 	glBindVertexArray(0);
+
+	this->ambientLight = std::make_unique<AmbientLight>(glm::vec3(0.3, 0.3, 0.1));
 }
 
 void App::UnloadContent()
@@ -158,14 +173,27 @@ void App::Update(const AppTime & time)
 
 void App::Draw(const AppTime & time)
 {
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 
-	this->simpleShader->Apply();
+	glm::mat4 world, viewProj;
+	this->deferredRenderer->StartGeometryPass(world, viewProj);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, this->textureId);
+	glUniform1i(this->deferredRenderer->GetDiffuseTextureLocation(), 0);
 	glBindVertexArray(this->varrayId);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);
+
+	this->deferredRenderer->EndGeometryPass();
+	this->deferredRenderer->StartLightPass();
+
+	this->ambientLight->Draw();
+
+	this->deferredRenderer->EndLightPass();
 }

@@ -12,6 +12,8 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="AmbientLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -21,12 +23,26 @@
     <ClInclude Include="AppTime.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="AmbientLight.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\simple.vs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\deferredGeometry.vs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\deferredGeometry.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\passthrough.vs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\ambientLight.fs.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

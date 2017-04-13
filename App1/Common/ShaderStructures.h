@@ -1,11 +1,20 @@
 #pragma once
 
-#include <glm\glm.hpp>
-
 struct VertexPositionColor
 {
 	glm::vec3 position;
 	glm::vec3 color;
+};
 
-	static GLint GetVertexStride() { return sizeof(position) + sizeof(color); };
+struct VertexPositionNormalTexture
+{
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 texCoord;
+};
+
+struct VertexPositionTexture
+{
+	glm::vec3 position;
+	glm::vec2 texCoord;
 };
