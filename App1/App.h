@@ -1,6 +1,8 @@
 #pragma once
 
 #include "AppTime.h"
+#include "Shader.h"
+#include "Common\ShaderStructures.h"
 
 class App
 {
@@ -9,6 +11,8 @@ public:
 	~App();
 	bool Initialize(int width, int height, const char* title);
 	void GameLoop();
+	void LoadContent();
+	void UnloadContent();
 	void FixedUpdate(const AppTime & time);
 	void Update(const AppTime & time);
 	void Draw(const AppTime & time);
@@ -19,5 +23,9 @@ private:
 
 	GLFWwindow* window;
 	bool glfwInitialized = false;
+
+	std::unique_ptr<Shader> simpleShader;
+	std::vector<VertexPositionColor> vertices;
+	GLuint vbufferId, varrayId;
 };
 

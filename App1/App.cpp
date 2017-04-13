@@ -52,6 +52,32 @@ bool App::Initialize(int width, int height, const char* title)
 	return true;
 }
 
+void App::LoadContent()
+{
+	this->simpleShader = std::make_unique<Shader>("Shader\\simple.vs.glsl", "Shader\\simple.fs.glsl");
+
+	this->vertices.push_back(VertexPositionColor{ glm::vec3(0.0, 0.5, 0.0), glm::vec3(1.0, 0.0, 0.0) });
+	this->vertices.push_back(VertexPositionColor{ glm::vec3(-0.5, -0.5, 0.0), glm::vec3(0.0, 1.0, 0.0) });
+	this->vertices.push_back(VertexPositionColor{ glm::vec3(0.5, -0.5, 0.0), glm::vec3(0.0, 0.0, 1.0) });
+
+	glGenVertexArrays(1, &this->varrayId);
+	glGenBuffers(1, &this->vbufferId);
+	glBindVertexArray(this->varrayId);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vbufferId);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPositionColor) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionColor), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionColor), (GLvoid*)(sizeof(VertexPositionColor::color)));
+	glEnableVertexAttribArray(1);
+	glBindVertexArray(0);
+}
+
+void App::UnloadContent()
+{
+	glDeleteVertexArrays(1, &this->varrayId);
+	glDeleteBuffers(1, &this->vbufferId);
+}
+
 void App::GameLoop()
 {
 	const uint64_t ticksPerSecond = glfwGetTimerFrequency();
@@ -65,6 +91,8 @@ void App::GameLoop()
 	uint64_t totalTicks = 0;
 
 	auto appTime = AppTime(ticksPerSecond);
+
+	this->LoadContent();
 
 	while (!glfwWindowShouldClose(this->window))
 	{
@@ -94,6 +122,8 @@ void App::GameLoop()
 
 		glfwSwapBuffers(this->window);
 	}
+
+	this->UnloadContent();
 }
 
 void App::StaticKeyCallback(GLFWwindow * window, int key, int scancode, int action, int mode)
@@ -119,4 +149,9 @@ void App::Draw(const AppTime & time)
 {
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	this->simpleShader->Apply();
+	glBindVertexArray(this->varrayId);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(0);
 }

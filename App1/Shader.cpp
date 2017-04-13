@@ -22,8 +22,9 @@ Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
 		std::cerr << "Couldn't read shader file " << vertexShaderPath << " or " << fragmentShaderPath << std::endl;
 	}
 
-	const GLchar* vsCode = vsStream.str().c_str();
-	const GLchar* fsCode = fsStream.str().c_str();
+	std::string vsCodeStr = vsStream.str(), fsCodeStr = fsStream.str();
+	const GLchar* vsCode = vsCodeStr.c_str();
+	const GLchar* fsCode = fsCodeStr.c_str();
 
 	// create shaders and compile
 	GLuint vsId, fsId;
