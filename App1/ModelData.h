@@ -29,6 +29,16 @@ private:
 	std::vector<VertexType> vertices;
 	std::vector<GLuint> indices;
 	GLuint vertexArrayId, vertexBufferId, elementBufferId;
+	
+	template<VertexAttributeType attribute>
+	void EnableVertexAttribute(GLint size, GLuint & index)
+	{
+		if (VertexAttribute<VertexType, attribute>::exists)
+		{
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index++, size, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)VertexAttribute<VertexType, attribute>::offset);
+		}
+	}
 };
 
 template<typename VertexType>
@@ -61,16 +71,14 @@ Mesh<VertexType>::Mesh(const std::vector<VertexType> &vertices, const std::vecto
 	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexType) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->elementBufferId);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * this->indices.size(), this->indices.data(), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (GLvoid*)offsetof(VertexType, position));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (GLvoid*)offsetof(VertexType, normal));
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (GLvoid*)offsetof(VertexType, tangent));
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (GLvoid*)offsetof(VertexType, bitangent));
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexType), (GLvoid*)offsetof(VertexType, texCoord));
+	GLuint inputIndex = 0;
+	glEnableVertexAttribArray(inputIndex);
+	glVertexAttribPointer(inputIndex++, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (GLvoid*)offsetof(VertexType, position));
+	this->EnableVertexAttribute<VertexAttribute_color>(3, inputIndex);
+	this->EnableVertexAttribute<VertexAttribute_texCoord>(2, inputIndex);
+	this->EnableVertexAttribute<VertexAttribute_normal>(3, inputIndex);
+	this->EnableVertexAttribute<VertexAttribute_tangent>(3, inputIndex);
+	this->EnableVertexAttribute<VertexAttribute_bitangent>(3, inputIndex);
 	glBindVertexArray(0);
 
 #ifdef _DEBUG
