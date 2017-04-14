@@ -38,6 +38,13 @@ DeferredRenderer::DeferredRenderer(GLsizei width, GLsizei height)
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+#ifdef _DEBUG
+	glObjectLabel(GL_FRAMEBUFFER, this->geometryFrameBufferId, -1, "G-Buffer");
+	glObjectLabel(GL_TEXTURE, this->geometryTextureIds[0], -1, "G-Buffer Color");
+	glObjectLabel(GL_TEXTURE, this->geometryTextureIds[1], -1, "G-Buffer Normals");
+	glObjectLabel(GL_TEXTURE, this->geometryTextureIds[2], -1, "G-Buffer Depth");
+#endif
+
 	this->geometryShader = std::make_unique<Shader>("Shader\\deferredGeometry.vs.glsl", "Shader\\deferredGeometry.fs.glsl");
 }
 

@@ -72,6 +72,12 @@ Mesh<VertexType>::Mesh(const std::vector<VertexType> &vertices, const std::vecto
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexType), (GLvoid*)offsetof(VertexType, texCoord));
 	glBindVertexArray(0);
+
+#ifdef _DEBUG
+	glObjectLabel(GL_BUFFER, this->vertexBufferId, -1, "Mesh vertices");
+	glObjectLabel(GL_BUFFER, this->elementBufferId, -1, "Mesh indices");
+	glObjectLabel(GL_VERTEX_ARRAY, this->vertexArrayId, -1, "Mesh array");
+#endif
 }
 
 template<typename VertexType>

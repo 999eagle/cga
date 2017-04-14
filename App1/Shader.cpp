@@ -61,6 +61,10 @@ Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
 		std::cerr << "Error while linking shader program:\n" << infoLog << std::endl;
 	}
 
+#ifdef _DEBUG
+	glObjectLabel(GL_PROGRAM, this->programId, -1, ("Shader program. VS: " + std::string(vertexShaderPath) + " FS: " + std::string(fragmentShaderPath)).c_str());
+#endif
+
 	glDeleteShader(vsId);
 	glDeleteShader(fsId);
 }
