@@ -14,6 +14,8 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="AmbientLight.cpp" />
+    <ClCompile Include="Importer.cpp" />
+    <ClCompile Include="ModelData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -25,6 +27,8 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="AmbientLight.h" />
+    <ClInclude Include="ModelData.h" />
+    <ClInclude Include="Importer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">

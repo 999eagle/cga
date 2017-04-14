@@ -9,8 +9,8 @@ class DeferredRenderer
 public:
 	DeferredRenderer(GLsizei width, GLsizei height);
 	~DeferredRenderer();
-	GLint GetDiffuseTextureLocation();
-	GLint GetWorldMatrixLocation();
+	GLint GetWorldMatrixLocation() const;
+	const Shader & GetGeometryShader() const;
 	void StartGeometryPass(glm::mat4 viewProj);
 	void EndGeometryPass();
 	void StartLightPass();

@@ -1,0 +1,43 @@
+#pragma once
+
+#include "ModelData.h"
+
+class TextureImporter
+{
+public:
+	~TextureImporter();
+	std::shared_ptr<Texture> LoadTexture(const std::string & path, aiTextureType type = aiTextureType_DIFFUSE);
+	static TextureImporter & GetInstance()
+	{
+		static TextureImporter instance;
+		return instance;
+	}
+private:
+	std::map<std::string, std::shared_ptr<Texture>> loadedTextures;
+	TextureImporter() { }
+};
+
+class ModelImporter
+{
+public:
+	typedef
+		VertexPositionTextureNTB
+		VertexType;
+	typedef
+		std::vector<std::pair<std::shared_ptr<Mesh<VertexType>>, std::shared_ptr<Material>>>
+		modelDataVector;
+	std::shared_ptr<Model<VertexType>> LoadModel(const std::string & path);
+	static ModelImporter & GetInstance()
+	{
+		static ModelImporter instance;
+		return instance;
+	}
+private:
+	std::map<std::string, std::shared_ptr<Model<VertexType>>> loadedModels;
+	std::shared_ptr<Texture> nullDiffuse, nullNormal, nullSpecular;
+	ModelImporter();
+	std::shared_ptr<Model<VertexType>> LoadModelImplementation(const std::string & path);
+	void ProcessNode(modelDataVector & modelData, const aiNode * node, const aiScene * scene, const std::string & directory);
+	void ProcessMesh(modelDataVector & modelData, const aiMesh * mesh, const aiScene * scene, const std::string & directory);
+	void LoadTextures(std::vector<std::shared_ptr<Texture>> & textures, const aiMaterial * material, aiTextureType type, const std::string & directory);
+};

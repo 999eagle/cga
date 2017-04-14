@@ -5,6 +5,7 @@
 #include "Common\ShaderStructures.h"
 #include "DeferredRenderer.h"
 #include "AmbientLight.h"
+#include "ModelData.h"
 
 class App
 {
@@ -28,9 +29,7 @@ private:
 	std::unique_ptr<DeferredRenderer> deferredRenderer;
 	std::unique_ptr<AmbientLight> ambientLight;
 
-	std::unique_ptr<Shader> simpleShader;
-	std::vector<VertexPositionNormalTexture> vertices;
-	std::vector<GLushort> indices;
-	GLuint vbufferId, ebufferId, varrayId, textureId;
+	std::shared_ptr<Model<VertexPositionTextureNTB>> ground;
+	std::shared_ptr<Model<VertexPositionTextureNTB>> nanosuit;
 };
 

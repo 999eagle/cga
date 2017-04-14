@@ -47,14 +47,14 @@ DeferredRenderer::~DeferredRenderer()
 	glDeleteFramebuffers(1, &this->geometryFrameBufferId);
 }
 
-GLint DeferredRenderer::GetDiffuseTextureLocation()
-{
-	return this->geometryShader->GetUniformLocation("diffuseTexture");
-}
-
-GLint DeferredRenderer::GetWorldMatrixLocation()
+GLint DeferredRenderer::GetWorldMatrixLocation() const
 {
 	return this->geometryShader->GetUniformLocation("world");
+}
+
+const Shader & DeferredRenderer::GetGeometryShader() const
+{
+	return *(this->geometryShader);
 }
 
 void DeferredRenderer::StartGeometryPass(glm::mat4 viewProj)

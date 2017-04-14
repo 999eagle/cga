@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "App.h"
 
+#include "Importer.h"
+
 App* App::currentApp = NULL;
 
 App::App()
@@ -56,52 +58,13 @@ bool App::Initialize(int width, int height, const char* title)
 
 void App::LoadContent()
 {
-	this->simpleShader = std::make_unique<Shader>("Shader\\simple.vs.glsl", "Shader\\simple.fs.glsl");
-
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-1.0, 0, -1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(0.0, 1.0) });
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(-1.0, 0, 1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(0.0, 0.0) });
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(1.0, 0, 1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(1.0, 0.0)  });
-	this->vertices.push_back(VertexPositionNormalTexture{ glm::vec3(1.0, 0, -1.0), glm::vec3(0.0, 1.0, 0.0), glm::vec2(1.0, 1.0) });
-	this->indices.push_back(0);
-	this->indices.push_back(1);
-	this->indices.push_back(2);
-	this->indices.push_back(0);
-	this->indices.push_back(2);
-	this->indices.push_back(3);
-
-	glGenTextures(1, &this->textureId);
-	glBindTexture(GL_TEXTURE_2D, this->textureId);
-	int width, height;
-	unsigned char* image = SOIL_load_image("Content\\Texture\\wall.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glGenVertexArrays(1, &this->varrayId);
-	glGenBuffers(1, &this->vbufferId);
-	glGenBuffers(1, &this->ebufferId);
-	glBindVertexArray(this->varrayId);
-	glBindBuffer(GL_ARRAY_BUFFER, this->vbufferId);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPositionNormalTexture) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionNormalTexture), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPositionNormalTexture), (GLvoid*)(sizeof(GLfloat) * 3));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexPositionNormalTexture), (GLvoid*)(sizeof(GLfloat) * 6));
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebufferId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * this->indices.size(), this->indices.data(), GL_STATIC_DRAW);
-	glBindVertexArray(0);
-
-	this->ambientLight = std::make_unique<AmbientLight>(glm::vec3(0.3, 0.3, 0.1));
+	this->ambientLight = std::make_unique<AmbientLight>(glm::vec3(1.0, 1.0, 1.0));
+	this->ground = ModelImporter::GetInstance().LoadModel("Content\\Model\\ground.obj");
+	this->nanosuit = ModelImporter::GetInstance().LoadModel("Content\\Model\\nanosuit\\nanosuit.obj");
 }
 
 void App::UnloadContent()
 {
-	glDeleteVertexArrays(1, &this->varrayId);
-	glDeleteBuffers(1, &this->vbufferId);
-	glDeleteBuffers(1, &this->ebufferId);
 }
 
 void App::GameLoop()
@@ -188,12 +151,11 @@ void App::Draw(const AppTime & time)
 	this->deferredRenderer->StartGeometryPass(proj * view);
 
 	glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(world));
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, this->textureId);
-	glUniform1i(this->deferredRenderer->GetDiffuseTextureLocation(), 0);
-	glBindVertexArray(this->varrayId);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
-	glBindVertexArray(0);
+	this->ground->Draw(this->deferredRenderer->GetGeometryShader());
+
+	world = glm::scale(world, glm::vec3(0.1, 0.1, 0.1));
+	glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(world));
+	this->nanosuit->Draw(this->deferredRenderer->GetGeometryShader());
 
 	this->deferredRenderer->EndGeometryPass();
 	this->deferredRenderer->StartLightPass();
