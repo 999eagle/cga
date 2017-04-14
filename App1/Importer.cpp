@@ -73,23 +73,24 @@ std::shared_ptr<Model<ModelImporter::VertexType>> ModelImporter::LoadModelImplem
 	}
 	modelDataVector modelData;
 	std::string directory = path.substr(0, path.find_last_of("\\/") + 1);
-	this->ProcessNode(modelData, scene->mRootNode, scene, directory);
+	std::string name = path;
+	this->ProcessNode(modelData, scene->mRootNode, scene, directory, name);
 	return std::make_shared<Model<VertexType>>(modelData);
 }
 
-void ModelImporter::ProcessNode(modelDataVector & modelData, const aiNode * node, const aiScene * scene, const std::string & directory)
+void ModelImporter::ProcessNode(modelDataVector & modelData, const aiNode * node, const aiScene * scene, const std::string & directory, const std::string & name)
 {
 	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
-		this->ProcessMesh(modelData, scene->mMeshes[node->mMeshes[i]], scene, directory);
+		this->ProcessMesh(modelData, scene->mMeshes[node->mMeshes[i]], scene, directory, name);
 	}
 	for (uint32_t i = 0; i < node->mNumChildren; i++)
 	{
-		this->ProcessNode(modelData, node->mChildren[i], scene, directory);
+		this->ProcessNode(modelData, node->mChildren[i], scene, directory, name);
 	}
 }
 
-void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh, const aiScene * scene, const std::string & directory)
+void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh, const aiScene * scene, const std::string & directory, const std::string & name)
 {
 	std::vector<VertexType> vertices;
 	std::vector<GLuint> indices;
@@ -142,7 +143,7 @@ void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh
 	{
 		textures.push_back(this->nullSpecular);
 	}
-	auto newMesh = std::make_shared<Mesh<VertexType>>(vertices, indices);
+	auto newMesh = std::make_shared<Mesh<VertexType>>(vertices, indices, name + "\\" + mesh->mName.C_Str());
 	auto material = std::make_shared<Material>(textures);
 	modelData.push_back(std::make_pair(newMesh, material));
 }

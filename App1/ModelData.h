@@ -22,7 +22,7 @@ template<typename VertexType>
 class Mesh
 {
 public:
-	Mesh(const std::vector<VertexType> &vertices, const std::vector<GLuint> &indices);
+	Mesh(const std::vector<VertexType> &vertices, const std::vector<GLuint> &indices, const std::string & debugName = "");
 	~Mesh();
 	void Draw() const;
 private:
@@ -47,7 +47,7 @@ private:
 \*************************************/
 
 template<typename VertexType>
-Mesh<VertexType>::Mesh(const std::vector<VertexType> &vertices, const std::vector<GLuint> &indices)
+Mesh<VertexType>::Mesh(const std::vector<VertexType> &vertices, const std::vector<GLuint> &indices, const std::string & debugName)
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -74,9 +74,9 @@ Mesh<VertexType>::Mesh(const std::vector<VertexType> &vertices, const std::vecto
 	glBindVertexArray(0);
 
 #ifdef _DEBUG
-	glObjectLabel(GL_BUFFER, this->vertexBufferId, -1, "Mesh vertices");
-	glObjectLabel(GL_BUFFER, this->elementBufferId, -1, "Mesh indices");
-	glObjectLabel(GL_VERTEX_ARRAY, this->vertexArrayId, -1, "Mesh array");
+	glObjectLabel(GL_BUFFER, this->vertexBufferId, -1, ("Mesh " + debugName + " vertices").c_str());
+	glObjectLabel(GL_BUFFER, this->elementBufferId, -1, ("Mesh " + debugName + " indices").c_str());
+	glObjectLabel(GL_VERTEX_ARRAY, this->vertexArrayId, -1, ("Mesh " + debugName + " array").c_str());
 #endif
 }
 
