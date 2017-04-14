@@ -15,6 +15,7 @@ void main()
 	outColor.rgb = texture(diffuseTexture0, texCoord).rgb;
 	vec3 normal = texture(normalTexture0, texCoord).rgb;
 	vec3 specular = texture(specularTexture0, texCoord).rgb;
-	outColor.a = specular.r;
+	outColor.a = 0.9;
 	outNormal.xyz = normalize(NTB * normalize(normal * 2.0 - 1.0));
+	outNormal.w = 0.0;
 }

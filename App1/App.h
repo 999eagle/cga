@@ -5,6 +5,7 @@
 #include "Common\ShaderStructures.h"
 #include "DeferredRenderer.h"
 #include "AmbientLight.h"
+#include "PointLight.h"
 #include "ModelData.h"
 
 class App
@@ -27,7 +28,7 @@ private:
 	GLFWwindow* window;
 	bool glfwInitialized = false;
 	std::unique_ptr<DeferredRenderer> deferredRenderer;
-	std::unique_ptr<AmbientLight> ambientLight;
+	std::vector<std::unique_ptr<ILight>> lights;
 
 	std::shared_ptr<Model<VertexPositionTextureNTB>> ground;
 	std::shared_ptr<Model<VertexPositionTextureNTB>> nanosuit;

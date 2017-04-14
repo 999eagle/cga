@@ -58,7 +58,8 @@ bool App::Initialize(int width, int height, const char* title)
 
 void App::LoadContent()
 {
-	this->ambientLight = std::make_unique<AmbientLight>(glm::vec3(1.0, 1.0, 1.0));
+	this->lights.push_back(std::unique_ptr<ILight>(new AmbientLight(glm::vec3(0.03, 0.03, 0.03))));
+	this->lights.push_back(std::unique_ptr<ILight>(new PointLight(glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.0, 1.0, 0.0), 2.5)));
 	this->ground = ModelImporter::GetInstance().LoadModel("Content\\Model\\ground.obj");
 	this->nanosuit = ModelImporter::GetInstance().LoadModel("Content\\Model\\nanosuit\\nanosuit.obj");
 }
@@ -143,10 +144,11 @@ void App::Draw(const AppTime & time)
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 
-	glm::mat4 world, view, proj;
+	glm::mat4 world, view, proj, invViewProj;
 	glm::vec3 cameraPos = glm::vec3(0.0, 1.0, 3.0), cameraDirection = glm::vec3(0.0, 0.0, -1.0);
 	view = glm::lookAt(cameraPos, cameraPos + cameraDirection, glm::vec3(0.0, 1.0, 0.0));
 	proj = glm::perspective(45.0, 1280.0 / 720.0, 0.1, 100.0);
+	invViewProj = glm::inverse(proj * view);
 	GLint worldMatrixLocation = this->deferredRenderer->GetWorldMatrixLocation();
 	this->deferredRenderer->StartGeometryPass(proj * view);
 
@@ -160,7 +162,10 @@ void App::Draw(const AppTime & time)
 	this->deferredRenderer->EndGeometryPass();
 	this->deferredRenderer->StartLightPass();
 
-	this->ambientLight->Draw();
+	for (auto it = this->lights.begin(); it != this->lights.end(); it++)
+	{
+		(*it)->Draw(invViewProj, cameraPos);
+	}
 
 	this->deferredRenderer->EndLightPass();
 }

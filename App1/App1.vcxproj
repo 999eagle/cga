@@ -158,7 +158,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AmbientLight.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="Importer.cpp" />
@@ -173,9 +172,11 @@
     <ClInclude Include="AppTime.h" />
     <ClInclude Include="Common\ShaderStructures.h" />
     <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="ILight.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="QuadRenderer.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
@@ -184,6 +185,7 @@
     <None Include="Shader\deferredGeometry.fs.glsl" />
     <None Include="Shader\deferredGeometry.vs.glsl" />
     <None Include="Shader\passthrough.vs.glsl" />
+    <None Include="Shader\pointLight.fs.glsl" />
     <None Include="Shader\simple.fs.glsl" />
     <None Include="Shader\simple.vs.glsl" />
   </ItemGroup>
