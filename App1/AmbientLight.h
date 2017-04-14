@@ -12,8 +12,5 @@ public:
 private:
 	glm::vec3 lightColor;
 	std::unique_ptr<Shader> lightShader;
-	std::vector<VertexPositionTexture> vertices;
-	std::vector<GLushort> indices;
-	GLuint vbufferId, ebufferId, varrayId;
 };
 

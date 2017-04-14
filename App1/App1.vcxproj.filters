@@ -16,6 +16,7 @@
     <ClCompile Include="AmbientLight.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="ModelData.cpp" />
+    <ClCompile Include="QuadRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -29,6 +30,7 @@
     <ClInclude Include="AmbientLight.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="Importer.h" />
+    <ClInclude Include="QuadRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">

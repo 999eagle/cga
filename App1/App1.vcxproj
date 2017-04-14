@@ -164,6 +164,7 @@
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelData.cpp" />
+    <ClCompile Include="QuadRenderer.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="Importer.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="QuadRenderer.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
