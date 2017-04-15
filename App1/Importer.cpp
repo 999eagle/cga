@@ -127,7 +127,6 @@ void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh
 	this->LoadTextures(textures, mat, aiTextureType_HEIGHT, directory);
 	this->LoadTextures(textures, mat, aiTextureType_SPECULAR, directory);
 	this->LoadTextures(textures, mat, aiTextureType_SHININESS, directory);
-	// load default textures to ensure that diffuse, normals and specular maps are always present
 	auto newMesh = std::make_shared<Mesh<VertexType>>(vertices, indices, name + "\\" + mesh->mName.C_Str());
 	auto material = std::make_shared<Material>(textures);
 	modelData.push_back(std::make_pair(newMesh, material));
