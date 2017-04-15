@@ -16,7 +16,10 @@ std::shared_ptr<Texture> TextureImporter::LoadTexture(const std::string & path, 
 	glBindTexture(GL_TEXTURE_2D, newTexture->textureId);
 	int width, height;
 	unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	GLint internalFormat = GL_RGB;
+	if (type == aiTextureType_DIFFUSE)
+		internalFormat = GL_SRGB;
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, 0);

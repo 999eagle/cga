@@ -16,6 +16,7 @@
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="QuadRenderer.cpp" />
+    <ClCompile Include="PostProcessing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -32,6 +33,8 @@
     <ClInclude Include="QuadRenderer.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ILight.h" />
+    <ClInclude Include="PostProcessing.h" />
+    <ClInclude Include="GammaPostProcessing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">
@@ -53,6 +56,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\pointLight.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\postGamma.fs.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

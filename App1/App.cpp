@@ -51,6 +51,7 @@ bool App::Initialize(int width, int height, const char* title)
 	glfwSetKeyCallback(window, App::StaticKeyCallback);
 
 	this->deferredRenderer = std::make_unique<DeferredRenderer>(width, height);
+	this->postProcessing = std::make_unique<PostProcessing>(width, height);
 
 	App::currentApp = this;
 	return true;
@@ -62,6 +63,7 @@ void App::LoadContent()
 	this->lights.push_back(std::unique_ptr<ILight>(new PointLight(glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.0, 1.0, 0.0), 2.5)));
 	this->ground = ModelImporter::GetInstance().LoadModel("Content\\Model\\ground.obj");
 	this->nanosuit = ModelImporter::GetInstance().LoadModel("Content\\Model\\nanosuit\\nanosuit.obj");
+	this->gammaPostProc = std::make_unique<GammaPostProcessing>();
 }
 
 void App::UnloadContent()
@@ -137,9 +139,6 @@ void App::Update(const AppTime & time)
 
 void App::Draw(const AppTime & time)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
@@ -160,6 +159,9 @@ void App::Draw(const AppTime & time)
 	this->nanosuit->Draw(this->deferredRenderer->GetGeometryShader());
 
 	this->deferredRenderer->EndGeometryPass();
+	this->postProcessing->BindFramebuffer();
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 	this->deferredRenderer->StartLightPass();
 
 	for (auto it = this->lights.begin(); it != this->lights.end(); it++)
@@ -168,4 +170,7 @@ void App::Draw(const AppTime & time)
 	}
 
 	this->deferredRenderer->EndLightPass();
+	this->postProcessing->BindFramebuffer();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	this->gammaPostProc->Draw();
 }

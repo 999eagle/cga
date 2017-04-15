@@ -6,7 +6,7 @@ class TextureImporter
 {
 public:
 	~TextureImporter();
-	std::shared_ptr<Texture> LoadTexture(const std::string & path, aiTextureType type = aiTextureType_DIFFUSE);
+	std::shared_ptr<Texture> LoadTexture(const std::string & path, aiTextureType type = aiTextureType_UNKNOWN);
 	static TextureImporter & GetInstance()
 	{
 		static TextureImporter instance;

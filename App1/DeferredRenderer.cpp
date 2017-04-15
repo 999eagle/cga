@@ -80,13 +80,12 @@ void DeferredRenderer::StartGeometryPass(glm::mat4 viewProj)
 void DeferredRenderer::EndGeometryPass()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// disable depth testing
+	glDisable(GL_DEPTH_TEST);
 }
 
 void DeferredRenderer::StartLightPass()
 {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	// disable depth testing
-	glDisable(GL_DEPTH_TEST);
 	// use additive blending
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD);
@@ -102,6 +101,5 @@ void DeferredRenderer::StartLightPass()
 
 void DeferredRenderer::EndLightPass()
 {
-	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 }

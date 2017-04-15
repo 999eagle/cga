@@ -7,6 +7,8 @@
 #include "AmbientLight.h"
 #include "PointLight.h"
 #include "ModelData.h"
+#include "PostProcessing.h"
+#include "GammaPostProcessing.h"
 
 class App
 {
@@ -28,9 +30,12 @@ private:
 	GLFWwindow* window;
 	bool glfwInitialized = false;
 	std::unique_ptr<DeferredRenderer> deferredRenderer;
+	std::unique_ptr<PostProcessing> postProcessing;
 	std::vector<std::unique_ptr<ILight>> lights;
 
 	std::shared_ptr<Model<VertexPositionTextureNTB>> ground;
 	std::shared_ptr<Model<VertexPositionTextureNTB>> nanosuit;
+
+	std::shared_ptr<GammaPostProcessing> gammaPostProc;
 };
 

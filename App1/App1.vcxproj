@@ -163,6 +163,7 @@
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelData.cpp" />
+    <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="QuadRenderer.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
@@ -172,11 +173,13 @@
     <ClInclude Include="AppTime.h" />
     <ClInclude Include="Common\ShaderStructures.h" />
     <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="GammaPostProcessing.h" />
     <ClInclude Include="ILight.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="QuadRenderer.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
@@ -186,6 +189,7 @@
     <None Include="Shader\deferredGeometry.vs.glsl" />
     <None Include="Shader\passthrough.vs.glsl" />
     <None Include="Shader\pointLight.fs.glsl" />
+    <None Include="Shader\postGamma.fs.glsl" />
     <None Include="Shader\simple.fs.glsl" />
     <None Include="Shader\simple.vs.glsl" />
   </ItemGroup>
