@@ -33,15 +33,8 @@ TextureImporter::~TextureImporter()
 {
 	for (auto it = this->loadedTextures.begin(); it != this->loadedTextures.end(); it++)
 	{
-		glDeleteTextures(1, &it->second->textureId);
+		glDeleteTextures(1, &(it->second->textureId));
 	}
-}
-
-ModelImporter::ModelImporter()
-{
-	this->nullDiffuse = TextureImporter::GetInstance().LoadTexture("Content\\Texture\\null_diffuse.png", aiTextureType_DIFFUSE);
-	this->nullNormal = TextureImporter::GetInstance().LoadTexture("Content\\Texture\\null_normal.png", aiTextureType_NORMALS);
-	this->nullSpecular = TextureImporter::GetInstance().LoadTexture("Content\\Texture\\null_specular.png", aiTextureType_SPECULAR);
 }
 
 std::shared_ptr<Model<ModelImporter::VertexType>> ModelImporter::LoadModel(const std::string & path)
@@ -130,19 +123,8 @@ void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh
 	this->LoadTextures(textures, mat, aiTextureType_NORMALS, directory);
 	this->LoadTextures(textures, mat, aiTextureType_HEIGHT, directory);
 	this->LoadTextures(textures, mat, aiTextureType_SPECULAR, directory);
+	this->LoadTextures(textures, mat, aiTextureType_SHININESS, directory);
 	// load default textures to ensure that diffuse, normals and specular maps are always present
-	if (mat->GetTextureCount(aiTextureType_DIFFUSE) == 0)
-	{
-		textures.push_back(this->nullDiffuse);
-	}
-	if (mat->GetTextureCount(aiTextureType_NORMALS) + mat->GetTextureCount(aiTextureType_HEIGHT) == 0)
-	{
-		textures.push_back(this->nullNormal);
-	}
-	if (mat->GetTextureCount(aiTextureType_SPECULAR) == 0)
-	{
-		textures.push_back(this->nullSpecular);
-	}
 	auto newMesh = std::make_shared<Mesh<VertexType>>(vertices, indices, name + "\\" + mesh->mName.C_Str());
 	auto material = std::make_shared<Material>(textures);
 	modelData.push_back(std::make_pair(newMesh, material));

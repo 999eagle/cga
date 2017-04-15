@@ -34,8 +34,7 @@ public:
 	}
 private:
 	std::map<std::string, std::shared_ptr<Model<VertexType>>> loadedModels;
-	std::shared_ptr<Texture> nullDiffuse, nullNormal, nullSpecular;
-	ModelImporter();
+	ModelImporter() { }
 	std::shared_ptr<Model<VertexType>> LoadModelImplementation(const std::string & path);
 	void ProcessNode(modelDataVector & modelData, const aiNode * node, const aiScene * scene, const std::string & directory, const std::string & name);
 	void ProcessMesh(modelDataVector & modelData, const aiMesh * mesh, const aiScene * scene, const std::string & directory, const std::string & name);

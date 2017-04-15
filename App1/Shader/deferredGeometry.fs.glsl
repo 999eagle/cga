@@ -8,14 +8,14 @@ layout (location = 1) out vec4 outNormal;
 
 uniform sampler2D diffuseTexture0;
 uniform sampler2D normalTexture0;
-uniform sampler2D specularTexture0;
+uniform sampler2D metallicTexture0;
+uniform sampler2D roughnessTexture0;
 
 void main()
 {
 	outColor.rgb = texture(diffuseTexture0, texCoord).rgb;
 	vec3 normal = texture(normalTexture0, texCoord).rgb;
-	vec3 specular = texture(specularTexture0, texCoord).rgb;
-	outColor.a = 0.9;
 	outNormal.xyz = normalize(NTB * normalize(normal * 2.0 - 1.0));
-	outNormal.w = 0.0;
+	outColor.a = texture(roughnessTexture0, texCoord).r;
+	outNormal.w = texture(metallicTexture0, texCoord).r;
 }

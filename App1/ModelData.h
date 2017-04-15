@@ -12,10 +12,12 @@ struct Texture
 class Material
 {
 public:
-	Material(const std::vector<std::shared_ptr<Texture>> & textures) : textures(textures) { }
+	Material(const std::vector<std::shared_ptr<Texture>> & textures);
 	void Use(const Shader & shader) const;
+	static inline void InitNull();
 private:
-	std::vector<std::shared_ptr<Texture>> textures;
+	std::shared_ptr<Texture> diffuseTexture, normalTexture, metallicTexture, roughnessTexture;
+	static std::shared_ptr<Texture> nullDiffuse, nullNormal, nullMetallic, nullRoughness;
 };
 
 template<typename VertexType>
@@ -101,6 +103,7 @@ void Mesh<VertexType>::Draw() const
 {
 	glBindVertexArray(this->vertexArrayId);
 	glDrawElements(GL_TRIANGLES, (GLsizei)this->indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
 template<typename VertexType>
