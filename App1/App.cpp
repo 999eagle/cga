@@ -52,6 +52,7 @@ bool App::Initialize(int width, int height, const char* title)
 
 	this->deferredRenderer = std::make_unique<DeferredRenderer>(width, height);
 	this->postProcessing = std::make_unique<PostProcessing>(width, height);
+	this->camera = std::unique_ptr<Camera>(new Camera(this->window, width, height, 45.0, 0.1, 100.0));
 
 	App::currentApp = this;
 	return true;
@@ -135,6 +136,8 @@ void App::Update(const AppTime & time)
 {
 	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(this->window, GL_TRUE);
+
+	this->camera->Update(time, this->window);
 }
 
 void App::Draw(const AppTime & time)
@@ -143,13 +146,9 @@ void App::Draw(const AppTime & time)
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 
-	glm::mat4 world, view, proj, invViewProj;
-	glm::vec3 cameraPos = glm::vec3(0.0, 1.0, 3.0), cameraDirection = glm::vec3(0.0, 0.0, -1.0);
-	view = glm::lookAt(cameraPos, cameraPos + cameraDirection, glm::vec3(0.0, 1.0, 0.0));
-	proj = glm::perspective(45.0, 1280.0 / 720.0, 0.1, 100.0);
-	invViewProj = glm::inverse(proj * view);
+	glm::mat4 world;
 	GLint worldMatrixLocation = this->deferredRenderer->GetWorldMatrixLocation();
-	this->deferredRenderer->StartGeometryPass(proj * view);
+	this->deferredRenderer->StartGeometryPass(this->camera->GetViewProj());
 
 	glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(world));
 	this->ground->Draw(this->deferredRenderer->GetGeometryShader());
@@ -166,7 +165,7 @@ void App::Draw(const AppTime & time)
 
 	for (auto it = this->lights.begin(); it != this->lights.end(); it++)
 	{
-		(*it)->Draw(invViewProj, cameraPos);
+		(*it)->Draw(this->camera->GetInverseViewProj(), this->camera->GetPosition());
 	}
 
 	this->deferredRenderer->EndLightPass();

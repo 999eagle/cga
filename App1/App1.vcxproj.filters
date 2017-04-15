@@ -17,6 +17,7 @@
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="QuadRenderer.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -35,6 +36,7 @@
     <ClInclude Include="ILight.h" />
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="GammaPostProcessing.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">
