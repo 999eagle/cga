@@ -60,8 +60,8 @@ bool App::Initialize(int width, int height, const char* title)
 
 void App::LoadContent()
 {
-	this->lights.push_back(std::unique_ptr<ILight>(new AmbientLight(glm::vec3(0.03, 0.03, 0.03))));
-	this->lights.push_back(std::unique_ptr<ILight>(new PointLight(glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.0, 1.0, 0.0), 2.5)));
+	this->lights.push_back(std::unique_ptr<ILight>(new AmbientLight(glm::vec3(0.005, 0.005, 0.005))));
+	this->lights.push_back(std::unique_ptr<ILight>(new PointLight(glm::vec3(0.3, 0.3, 0.3), glm::vec3(1.0, 1.0, 0.0), 2.5)));
 	this->ground = ModelImporter::GetInstance().LoadModel("Content\\Model\\ground.obj");
 	this->ground->meshes[0].second = MaterialImporter::GetInstance().LoadMaterial("Content\\Material\\rustediron2\\material.mat");
 	this->nanosuit = ModelImporter::GetInstance().LoadModel("Content\\Model\\nanosuit\\nanosuit.obj");
