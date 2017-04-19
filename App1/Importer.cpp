@@ -116,7 +116,8 @@ std::shared_ptr<Model<ModelImporter::VertexType>> ModelImporter::LoadModelImplem
 		aiProcess_GenUVCoords |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_CalcTangentSpace |
-		aiProcess_GenSmoothNormals);
+		aiProcess_GenSmoothNormals |
+		aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		std::cerr << "Import error in file " << path << ": " << importer.GetErrorString() << std::endl;
@@ -166,6 +167,10 @@ void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh
 		vertex.bitangent.x = mesh->mBitangents[i].x;
 		vertex.bitangent.y = mesh->mBitangents[i].y;
 		vertex.bitangent.z = mesh->mBitangents[i].z;
+		if (glm::dot(glm::cross(vertex.normal, vertex.tangent), vertex.bitangent) < 0)
+		{
+			vertex.tangent *= -1.0;
+		}
 		vertices.push_back(vertex);
 	}
 	for (uint32_t i = 0; i < mesh->mNumFaces; i++)
