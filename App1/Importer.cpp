@@ -45,6 +45,56 @@ TextureImporter::~TextureImporter()
 	}
 }
 
+std::shared_ptr<Material> MaterialImporter::LoadMaterial(const std::string & albedoMapPath, const std::string & normalMapPath, const std::string & metallicMapPath, const std::string & roughnessMapPath)
+{
+	std::vector<std::shared_ptr<Texture>> textures;
+	if (albedoMapPath != "")
+	{
+		textures.push_back(TextureImporter::GetInstance().LoadTexture(albedoMapPath, aiTextureType_DIFFUSE));
+	}
+	if (normalMapPath != "")
+	{
+		textures.push_back(TextureImporter::GetInstance().LoadTexture(normalMapPath, aiTextureType_NORMALS));
+	}
+	if (metallicMapPath != "")
+	{
+		textures.push_back(TextureImporter::GetInstance().LoadTexture(metallicMapPath, aiTextureType_SPECULAR));
+	}
+	if (roughnessMapPath != "")
+	{
+		textures.push_back(TextureImporter::GetInstance().LoadTexture(roughnessMapPath, aiTextureType_SHININESS));
+	}
+	return std::make_shared<Material>(textures);
+}
+
+std::shared_ptr<Material> MaterialImporter::LoadMaterial(const std::string & materialPath)
+{
+	auto it = this->loadedMaterials.find(materialPath);
+	if (it != this->loadedMaterials.end())
+	{
+		return it->second;
+	}
+	std::string directory = materialPath.substr(0, materialPath.find_last_of("\\/") + 1);
+	std::fstream matFile;
+	matFile.open(materialPath, std::fstream::in);
+	std::string mat;
+	std::vector<std::shared_ptr<Texture>> textures;
+	while (std::getline(matFile, mat))
+	{
+		auto spaceIdx = mat.find(" ");
+		auto key = mat.substr(0, spaceIdx);
+		auto value = mat.substr(spaceIdx + 1);
+		if (key == "map_albedo") textures.push_back(TextureImporter::GetInstance().LoadTexture(directory + value, aiTextureType_DIFFUSE));
+		else if (key == "map_normal") textures.push_back(TextureImporter::GetInstance().LoadTexture(directory + value, aiTextureType_NORMALS));
+		else if (key == "map_metallic") textures.push_back(TextureImporter::GetInstance().LoadTexture(directory + value, aiTextureType_SPECULAR));
+		else if (key == "map_roughness") textures.push_back(TextureImporter::GetInstance().LoadTexture(directory + value, aiTextureType_SHININESS));
+		else std::cerr << "Unknown key " << key << " in material " << materialPath << "!" << std::endl;
+	}
+	auto newMat = std::make_shared<Material>(textures);
+	this->loadedMaterials.insert(std::make_pair(materialPath, newMat));
+	return newMat;
+}
+
 std::shared_ptr<Model<ModelImporter::VertexType>> ModelImporter::LoadModel(const std::string & path)
 {
 	auto it = this->loadedModels.find(path);

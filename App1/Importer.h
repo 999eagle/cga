@@ -17,6 +17,22 @@ private:
 	TextureImporter() { }
 };
 
+class MaterialImporter
+{
+public:
+	~MaterialImporter() { }
+	std::shared_ptr<Material> LoadMaterial(const std::string & albedoMapPath, const std::string & normalMapPath, const std::string & metallicMapPath, const std::string & roughnessMapPath);
+	std::shared_ptr<Material> LoadMaterial(const std::string & materialPath);
+	static MaterialImporter & GetInstance()
+	{
+		static MaterialImporter instance;
+		return instance;
+	}
+private:
+	std::map<std::string, std::shared_ptr<Material>> loadedMaterials;
+	MaterialImporter() { }
+};
+
 class ModelImporter
 {
 public:

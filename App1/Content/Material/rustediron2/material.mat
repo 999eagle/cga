@@ -1,0 +1,4 @@
+map_albedo basecolor.png
+map_normal normal.png
+map_metallic metallic.png
+map_roughness roughness.png
