@@ -9,8 +9,8 @@ std::shared_ptr<Texture> TextureImporter::LoadTexture(const std::string & path, 
 		return it->second;
 	}
 
-	int width, height;
-	unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+	int width, height, channels;
+	unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
 	if (image == NULL)
 	{
 		std::cerr << "Error loading texture data from file " << path << std::endl;
