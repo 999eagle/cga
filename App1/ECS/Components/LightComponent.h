@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\Component.h"
-#include "..\..\ILight.h"
+#include "..\..\Lights\ILight.h"
 
 namespace ECS { namespace Components {
 	class LightComponent : public Component

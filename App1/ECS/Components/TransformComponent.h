@@ -10,7 +10,7 @@ namespace ECS { namespace Components {
 
 		glm::mat4 & GetLocalTransform() { return this->matrix; }
 		void SetLocalTransform(const glm::mat4 & matrix) { this->matrix = matrix; }
-		glm::mat4 & GetWorldTransform()
+		glm::mat4 GetWorldTransform()
 		{
 			if (this->parent == NULL) return this->matrix;
 			return this->matrix * this->parent->GetWorldTransform();

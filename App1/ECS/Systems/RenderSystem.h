@@ -3,10 +3,10 @@
 #include "..\System.h"
 #include "..\World.h"
 #include "..\..\DeferredRenderer.h"
-#include "..\..\PostProcessing.h"
+#include "..\..\PostProcessing\PostProcessing.h"
 #include "..\..\Common\ShaderStructures.h"
 
-#include "..\..\GammaPostProcessing.h"
+#include "..\..\PostProcessing\GammaPostProcessing.h"
 
 namespace ECS { namespace Systems
 {

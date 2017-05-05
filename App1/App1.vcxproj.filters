@@ -19,6 +19,12 @@
     <Filter Include="ECS\Components">
       <UniqueIdentifier>{40882f43-a240-4c73-967d-26860be96639}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lights">
+      <UniqueIdentifier>{b87ba20e-0f7a-421e-95f4-c67537538f1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcessing">
+      <UniqueIdentifier>{b7459b33-2e60-419e-963a-4720ae5836e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -28,7 +34,6 @@
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="QuadRenderer.cpp" />
-    <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ECS\World.cpp">
       <Filter>ECS</Filter>
@@ -48,6 +53,9 @@
     <ClCompile Include="ECS\Systems\RenderSystem.cpp">
       <Filter>ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessing\PostProcessing.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -57,14 +65,9 @@
     <ClInclude Include="AppTime.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="DeferredRenderer.h" />
-    <ClInclude Include="AmbientLight.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="QuadRenderer.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="ILight.h" />
-    <ClInclude Include="PostProcessing.h" />
-    <ClInclude Include="GammaPostProcessing.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ECS\World.h">
       <Filter>ECS</Filter>
@@ -92,6 +95,21 @@
     </ClInclude>
     <ClInclude Include="ECS\Components\LightComponent.h">
       <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Lights\AmbientLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Lights\ILight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Lights\PointLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing\GammaPostProcessing.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing\PostProcessing.h">
+      <Filter>PostProcessing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

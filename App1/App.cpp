@@ -6,6 +6,8 @@
 #include "ECS\Components\LightComponent.h"
 #include "ECS\Components\TransformComponent.h"
 #include "ECS\Components\ModelComponents.h"
+#include "Lights\AmbientLight.h"
+#include "Lights\PointLight.h"
 
 App* App::currentApp = NULL;
 
