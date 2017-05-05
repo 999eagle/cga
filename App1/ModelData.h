@@ -43,16 +43,6 @@ private:
 	}
 };
 
-template<typename VertexType>
-class Model
-{
-public:
-	Model(const std::vector<std::pair<std::shared_ptr<Mesh<VertexType>>, std::shared_ptr<Material>>> & meshes) : meshes(meshes) { }
-	void Draw(const Shader & shader) const;
-	std::vector<std::pair<std::shared_ptr<Mesh<VertexType>>, std::shared_ptr<Material>>> meshes;
-private:
-};
-
 
 /*************************************\
  Implementation
@@ -104,14 +94,4 @@ void Mesh<VertexType>::Draw() const
 	glBindVertexArray(this->vertexArrayId);
 	glDrawElements(GL_TRIANGLES, (GLsizei)this->indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-}
-
-template<typename VertexType>
-void Model<VertexType>::Draw(const Shader & shader) const
-{
-	for (auto it = this->meshes.begin(); it != this->meshes.end(); it++)
-	{
-		it->second->Use(shader);
-		it->first->Draw();
-	}
 }

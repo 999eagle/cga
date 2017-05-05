@@ -33,14 +33,5 @@ private:
 	bool glfwInitialized = false;
 
 	std::unique_ptr<ECS::World> world;
-	std::unique_ptr<Camera> camera;
-	std::unique_ptr<DeferredRenderer> deferredRenderer;
-	std::unique_ptr<PostProcessing> postProcessing;
-	std::vector<std::unique_ptr<ILight>> lights;
-
-	std::shared_ptr<Model<VertexPositionTextureNTB>> ground;
-	std::shared_ptr<Model<VertexPositionTextureNTB>> nanosuit;
-
-	std::shared_ptr<GammaPostProcessing> gammaPostProc;
 };
 
