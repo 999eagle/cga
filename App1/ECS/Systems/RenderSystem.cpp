@@ -41,8 +41,8 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 		auto material = it->GetComponent<ECS::Components::MaterialComponent>();
 		if (mesh != NULL && material != NULL)
 		{
-			auto transform = it->GetComponent<ECS::Components::TransformComponent>();
-			glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(transform->GetWorldTransform()));
+			auto transform = it->GetComponent<ECS::Components::TransformComponent>()->GetWorldTransform();
+			glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(transform));
 			material->material->Use(geometryShader);
 			mesh->mesh->Draw();
 		}
@@ -59,7 +59,7 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	for (auto * it : world.GetEntities())
 	{
 		auto light = it->GetComponent<ECS::Components::LightComponent>();
-		light->light->Draw(invViewProj, camPos);
+		if (light != NULL) light->light->Draw(invViewProj, camPos);
 	}
 
 	this->renderer->EndLightPass();

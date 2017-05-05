@@ -10,6 +10,7 @@
 #include "PostProcessing.h"
 #include "GammaPostProcessing.h"
 #include "Camera.h"
+#include "ECS\World.h"
 
 class App
 {
@@ -30,6 +31,8 @@ private:
 
 	GLFWwindow* window;
 	bool glfwInitialized = false;
+
+	std::unique_ptr<ECS::World> world;
 	std::unique_ptr<Camera> camera;
 	std::unique_ptr<DeferredRenderer> deferredRenderer;
 	std::unique_ptr<PostProcessing> postProcessing;

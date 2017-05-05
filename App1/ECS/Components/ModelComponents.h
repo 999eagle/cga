@@ -7,15 +7,15 @@ namespace ECS { namespace Components {
 	class MaterialComponent : public Component
 	{
 	public:
-		MaterialComponent(Material * material) : material(material) { }
-		Material * material;
+		MaterialComponent(std::shared_ptr<Material> material) : material(material) { }
+		std::shared_ptr<Material> material;
 	};
 
 	template<typename VertexType>
 	class MeshComponent : public Component
 	{
 	public:
-		MeshComponent(Mesh<VertexType> * mesh) : mesh(mesh) { }
-		Mesh<VertexType> * mesh;
+		MeshComponent(std::shared_ptr<Mesh<VertexType>> mesh) : mesh(mesh) { }
+		std::shared_ptr<Mesh<VertexType>> mesh;
 	};
 }}
