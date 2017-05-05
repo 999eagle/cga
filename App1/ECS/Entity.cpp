@@ -5,7 +5,7 @@
 
 ECS::Entity::Entity()
 {
-	this->AddComponent<ECS::Components::TransformComponent>(this);
+	this->AddComponent<ECS::Components::TransformComponent>();
 }
 
 ECS::Entity::~Entity()

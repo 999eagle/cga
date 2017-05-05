@@ -2,12 +2,16 @@
 
 namespace ECS
 {
+	class Entity;
 	class Component
 	{
 	public:
 		typedef uint8_t id_t;
+		Entity * GetEntity() { return this->entity; }
+		void SetEntity(Entity * entity) { this->entity = entity; }
 	protected:
 		static id_t nextId;
+		Entity * entity;
 	};
 
 	template<typename T>

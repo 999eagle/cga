@@ -44,6 +44,7 @@ void ECS::Entity::AddComponent(U && ... args)
 		this->components.resize(id + 1);
 	}
 	this->components[id] = new T(std::forward<U>(args) ...);
+	this->components[id]->SetEntity(this);
 }
 
 template<typename T>
