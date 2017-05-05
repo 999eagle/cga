@@ -7,6 +7,9 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{ee7a7200-be74-4944-8e48-087b1d19fc07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{dab3a058-4410-4f09-89a0-dc55c4010a09}</UniqueIdentifier>
+    </Filter>
     <Filter Include="pch">
       <UniqueIdentifier>{435b272e-d992-4797-8966-32795ac8c1e8}</UniqueIdentifier>
     </Filter>
@@ -21,8 +24,20 @@
     <ClCompile Include="QuadRenderer.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ECS\World.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
     <ClCompile Include="pch\pch.cpp">
       <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Entity.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Component.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\System.cpp">
+      <Filter>ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -42,8 +57,20 @@
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="GammaPostProcessing.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ECS\World.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
     <ClInclude Include="pch\pch.h">
       <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Component.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Entity.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\System.h">
+      <Filter>ECS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

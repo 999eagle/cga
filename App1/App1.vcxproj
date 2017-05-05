@@ -161,6 +161,10 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="ECS\Component.cpp" />
+    <ClCompile Include="ECS\Entity.cpp" />
+    <ClCompile Include="ECS\System.cpp" />
+    <ClCompile Include="ECS\World.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelData.cpp" />
@@ -181,6 +185,10 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Common\ShaderStructures.h" />
     <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="ECS\Component.h" />
+    <ClInclude Include="ECS\Entity.h" />
+    <ClInclude Include="ECS\System.h" />
+    <ClInclude Include="ECS\World.h" />
     <ClInclude Include="GammaPostProcessing.h" />
     <ClInclude Include="ILight.h" />
     <ClInclude Include="Importer.h" />
