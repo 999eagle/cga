@@ -69,22 +69,22 @@ void App::LoadContent()
 {
 	auto e = new ECS::Entity();
 	auto lightRootTransform = e->GetComponent<ECS::Components::TransformComponent>();
-	e->AddComponent<ECS::Components::LightComponent>(new AmbientLight(glm::vec3(0.005, 0.005, 0.005)));
+	e->AddComponent<ECS::Components::LightComponent>(new AmbientLight(glm::vec3(0.005f, 0.005f, 0.005f)));
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0, 0.3, 0.0), glm::vec3(1.0, 1.0, 0.0), 0.9));
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0f, 0.3f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.9f));
 	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3, 0.0, 0.0), glm::vec3(-1.0, 1.0, 0.0), 0.9));
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3f, 0.0f, 0.0f), glm::vec3(-1.0f, 1.0f, 0.0f), 0.9f));
 	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0, 0.0, 0.3), glm::vec3(0.0, 1.0, 1.0), 0.9));
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0f, 0.0f, 0.3f), glm::vec3(0.0f, 1.0f, 1.0f), 0.9f));
 	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3, 0.3, 0.0), glm::vec3(0.0, 1.0, -1.0), 0.9));
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3f, 0.3f, 0.0f), glm::vec3(0.0f, 1.0f, -1.0f), 0.9f));
 	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
 	this->world->AddEntity(e);
 
