@@ -7,6 +7,9 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{ee7a7200-be74-4944-8e48-087b1d19fc07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{435b272e-d992-4797-8966-32795ac8c1e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -18,6 +21,9 @@
     <ClCompile Include="QuadRenderer.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="pch\pch.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -25,7 +31,6 @@
     </ClInclude>
     <ClInclude Include="App.h" />
     <ClInclude Include="AppTime.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="AmbientLight.h" />
@@ -37,6 +42,9 @@
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="GammaPostProcessing.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="pch\pch.h">
+      <Filter>pch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">
