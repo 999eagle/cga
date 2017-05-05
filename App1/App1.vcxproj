@@ -186,6 +186,7 @@
     <ClInclude Include="Common\ShaderStructures.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="ECS\Component.h" />
+    <ClInclude Include="ECS\Components\CameraComponent.h" />
     <ClInclude Include="ECS\Components\LightComponent.h" />
     <ClInclude Include="ECS\Components\ModelComponents.h" />
     <ClInclude Include="ECS\Components\TransformComponent.h" />

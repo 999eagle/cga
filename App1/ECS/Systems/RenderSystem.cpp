@@ -4,6 +4,7 @@
 #include "..\Components\ModelComponents.h"
 #include "..\Components\TransformComponent.h"
 #include "..\Components\LightComponent.h"
+#include "..\Components\CameraComponent.h"
 
 using namespace ECS::Systems;
 
@@ -27,10 +28,27 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 
-	glm::mat4 view, proj, viewProj;
-	view = glm::lookAt(glm::vec3(0.0f, 1.0f, 3.0f), glm::vec3(0.0f, 1.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	proj = glm::perspective(45.0f, 1280.f / 720.f, 0.1f, 100.0f);
+	ECS::Components::CameraComponent * camera = NULL;
+	for (auto * it : world.GetEntities())
+	{
+		auto c = it->GetComponent<ECS::Components::CameraComponent>();
+		if (c != NULL)
+		{
+			camera = c;
+			break;
+		}
+	}
+	if (camera == NULL) return;
+
+	auto cameraTransform = camera->GetEntity()->GetComponent<ECS::Components::TransformComponent>()->GetWorldTransform();
+	glm::mat4 view, proj, viewProj, invViewProj;
+	glm::vec3 camPos;
+	proj = glm::perspective(camera->GetFOV(), camera->GetAspectRatio(), camera->GetNearPlane(), camera->GetFarPlane());
+	view = glm::inverse(cameraTransform);
 	viewProj = proj * view;
+	invViewProj = glm::inverse(viewProj);
+	camPos = cameraTransform * glm::vec4(0, 0, 0, 1);
+
 	GLint worldMatrixLocation = this->renderer->GetWorldMatrixLocation();
 	this->renderer->StartGeometryPass(viewProj);
 	auto geometryShader = this->renderer->GetGeometryShader();
@@ -54,8 +72,6 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	glClear(GL_COLOR_BUFFER_BIT);
 	this->renderer->StartLightPass();
 
-	glm::mat4 invViewProj = glm::inverse(viewProj);
-	glm::vec3 camPos = glm::vec3(0.0f, 1.0f, 3.0f);
 	for (auto * it : world.GetEntities())
 	{
 		auto light = it->GetComponent<ECS::Components::LightComponent>();

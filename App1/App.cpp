@@ -6,6 +6,7 @@
 #include "ECS\Components\LightComponent.h"
 #include "ECS\Components\TransformComponent.h"
 #include "ECS\Components\ModelComponents.h"
+#include "ECS\Components\CameraComponent.h"
 #include "Lights\AmbientLight.h"
 #include "Lights\PointLight.h"
 
@@ -68,6 +69,11 @@ bool App::Initialize(int width, int height, const char* title)
 void App::LoadContent()
 {
 	auto e = new ECS::Entity();
+	e->AddComponent<ECS::Components::CameraComponent>(45.0f, 1270.f / 720.f, 0.1f, 100.0f);
+	e->GetComponent<ECS::Components::TransformComponent>()->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
+	this->world->AddEntity(e);
+
+	e = new ECS::Entity();
 	auto lightRootTransform = e->GetComponent<ECS::Components::TransformComponent>();
 	e->AddComponent<ECS::Components::LightComponent>(new AmbientLight(glm::vec3(0.005f, 0.005f, 0.005f)));
 	this->world->AddEntity(e);

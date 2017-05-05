@@ -111,6 +111,9 @@
     <ClInclude Include="PostProcessing\PostProcessing.h">
       <Filter>PostProcessing</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\Components\CameraComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">
