@@ -10,7 +10,7 @@ namespace ECS
 		std::vector<ECS::Component *> components;
 
 	public:
-		Entity() { }
+		Entity();
 		~Entity();
 
 		template<typename T> T* GetComponent();

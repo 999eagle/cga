@@ -22,7 +22,7 @@ namespace ECS
 		Entity* GetEntity(entityId_t const id);
 		void RemoveEntity(entityId_t const id);
 		void RemoveEntity(std::vector<Entity*>::iterator it);
-		std::vector<Entity*> & GetEntities();
+		std::vector<Entity*> & GetEntities() { return this->entities; }
 
 		void Update(const AppTime & time);
 		void FixedUpdate(const AppTime & time);

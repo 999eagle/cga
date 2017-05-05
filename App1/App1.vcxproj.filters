@@ -13,6 +13,12 @@
     <Filter Include="pch">
       <UniqueIdentifier>{435b272e-d992-4797-8966-32795ac8c1e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ECS\Systems">
+      <UniqueIdentifier>{767aecaf-7c59-4845-9b11-a51b8b1f4413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\Components">
+      <UniqueIdentifier>{40882f43-a240-4c73-967d-26860be96639}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -38,6 +44,9 @@
     </ClCompile>
     <ClCompile Include="ECS\System.cpp">
       <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Systems\RenderSystem.cpp">
+      <Filter>ECS\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +80,18 @@
     </ClInclude>
     <ClInclude Include="ECS\System.h">
       <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Systems\RenderSystem.h">
+      <Filter>ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\TransformComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\ModelComponents.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\LightComponent.h">
+      <Filter>ECS\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@
 #include <map>
 #include <vector>
 #include <queue>
+#include <set>
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
