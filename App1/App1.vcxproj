@@ -206,6 +206,7 @@
     <ClInclude Include="PostProcessing\GammaPostProcessing.h" />
     <ClInclude Include="PostProcessing\PostProcessing.h" />
     <ClInclude Include="QuadRenderer.h" />
+    <ClInclude Include="Scripts\CameraInputScript.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>

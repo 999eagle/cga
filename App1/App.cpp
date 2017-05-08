@@ -11,6 +11,8 @@
 #include "Lights\PointLight.h"
 #include "ECS\Systems\ScriptSystem.h"
 
+#include "Scripts\CameraInputScript.h"
+
 App* App::currentApp = NULL;
 
 App::App()
@@ -59,10 +61,8 @@ bool App::Initialize(int width, int height, const char* title)
 	glfwSetKeyCallback(window, App::StaticKeyCallback);
 
 	this->world = std::make_unique<ECS::World>();
-	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height);
 	this->world->AddSystem<ECS::Systems::ScriptSystem>(this->window);
-
-	//this->camera = std::unique_ptr<Camera>(new Camera(this->window, width, height, 45.0, 0.1, 100.0));
+	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height);
 
 	App::currentApp = this;
 	return true;
@@ -73,6 +73,8 @@ void App::LoadContent()
 	auto e = new ECS::Entity();
 	e->AddComponent<ECS::Components::CameraComponent>(45.0f, 1270.f / 720.f, 0.1f, 100.0f);
 	e->GetComponent<ECS::Components::TransformComponent>()->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
+	e->AddComponent<ECS::Components::ScriptComponent>();
+	e->GetComponent<ECS::Components::ScriptComponent>()->AddScript<Scripts::CameraInputScript>(this->window);
 	this->world->AddEntity(e);
 
 	e = new ECS::Entity();

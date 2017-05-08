@@ -23,6 +23,7 @@ namespace ECS { namespace Components {
 	class ScriptComponent : public Component
 	{
 	public:
+		ScriptComponent() { }
 		~ScriptComponent()
 		{
 			for (auto * it : this->scripts)
