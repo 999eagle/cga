@@ -7,6 +7,7 @@ namespace ECS
 	{
 	public:
 		typedef uint8_t id_t;
+		virtual ~Component() { }
 		Entity * GetEntity() { return this->entity; }
 		void SetEntity(Entity * entity) { this->entity = entity; }
 	protected:

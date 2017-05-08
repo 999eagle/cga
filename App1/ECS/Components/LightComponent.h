@@ -7,7 +7,8 @@ namespace ECS { namespace Components {
 	class LightComponent : public Component
 	{
 	public:
-		LightComponent(ILight * light) : light(light) { }
-		std::unique_ptr<ILight> light;
+		LightComponent(std::shared_ptr<ILight> light) : light(light) { }
+		LightComponent(ILight * light) : LightComponent(std::shared_ptr<ILight>(light)) { }
+		std::shared_ptr<ILight> light;
 	};
 }}

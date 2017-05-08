@@ -5,6 +5,7 @@
 class ILight
 {
 public:
+	virtual ~ILight() { };
 	virtual void Draw(const glm::mat4 & invViewProj, const glm::vec3 & cameraPosition) = 0;
 protected:
 	std::shared_ptr<Shader> shader;
