@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ScriptSystem.h"
+#include "..\Components\ScriptComponent.h"
 
 void ECS::Systems::ScriptSystem::Update(ECS::World & world, const AppTime & time)
 {
@@ -10,8 +11,11 @@ void ECS::Systems::ScriptSystem::Update(ECS::World & world, const AppTime & time
 		{
 			for (auto * script : c->GetScripts())
 			{
-				script->SetScriptData(this->scriptData);
-				script->Update(time);
+				if (script != NULL)
+				{
+					script->SetScriptData(this->scriptData);
+					script->Update(time);
+				}
 			}
 		}
 	}
@@ -26,8 +30,11 @@ void ECS::Systems::ScriptSystem::FixedUpdate(ECS::World & world, const AppTime &
 		{
 			for (auto * script : c->GetScripts())
 			{
-				script->SetScriptData(this->scriptData);
-				script->FixedUpdate(time);
+				if (script != NULL)
+				{
+					script->SetScriptData(this->scriptData);
+					script->FixedUpdate(time);
+				}
 			}
 		}
 	}

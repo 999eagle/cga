@@ -25,8 +25,6 @@
     <Filter Include="PostProcessing">
       <UniqueIdentifier>{b7459b33-2e60-419e-963a-4720ae5836e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ECS\Scripts">
-      <UniqueIdentifier>{584888d2-05e6-42c7-b39f-8337ae60d104}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,8 +124,6 @@
     <ClInclude Include="ECS\Components\ScriptComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ECS\Scripts\Script.h">
-      <Filter>ECS\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
