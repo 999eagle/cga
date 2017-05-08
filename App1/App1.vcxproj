@@ -165,6 +165,7 @@
     <ClCompile Include="ECS\Entity.cpp" />
     <ClCompile Include="ECS\System.cpp" />
     <ClCompile Include="ECS\Systems\RenderSystem.cpp" />
+    <ClCompile Include="ECS\Systems\ScriptSystem.cpp" />
     <ClCompile Include="ECS\World.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -189,10 +190,13 @@
     <ClInclude Include="ECS\Components\CameraComponent.h" />
     <ClInclude Include="ECS\Components\LightComponent.h" />
     <ClInclude Include="ECS\Components\ModelComponents.h" />
+    <ClInclude Include="ECS\Components\ScriptComponent.h" />
     <ClInclude Include="ECS\Components\TransformComponent.h" />
     <ClInclude Include="ECS\Entity.h" />
+    <ClInclude Include="ECS\Scripts\Script.h" />
     <ClInclude Include="ECS\System.h" />
     <ClInclude Include="ECS\Systems\RenderSystem.h" />
+    <ClInclude Include="ECS\Systems\ScriptSystem.h" />
     <ClInclude Include="ECS\World.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Lights\AmbientLight.h" />

@@ -9,6 +9,7 @@
 #include "ECS\Components\CameraComponent.h"
 #include "Lights\AmbientLight.h"
 #include "Lights\PointLight.h"
+#include "ECS\Systems\ScriptSystem.h"
 
 App* App::currentApp = NULL;
 
@@ -59,6 +60,7 @@ bool App::Initialize(int width, int height, const char* title)
 
 	this->world = std::make_unique<ECS::World>();
 	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height);
+	this->world->AddSystem<ECS::Systems::ScriptSystem>(this->window);
 
 	//this->camera = std::unique_ptr<Camera>(new Camera(this->window, width, height, 45.0, 0.1, 100.0));
 

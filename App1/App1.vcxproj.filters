@@ -25,6 +25,9 @@
     <Filter Include="PostProcessing">
       <UniqueIdentifier>{b7459b33-2e60-419e-963a-4720ae5836e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ECS\Scripts">
+      <UniqueIdentifier>{584888d2-05e6-42c7-b39f-8337ae60d104}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="PostProcessing\PostProcessing.cpp">
       <Filter>PostProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Systems\ScriptSystem.cpp">
+      <Filter>ECS\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +119,15 @@
     </ClInclude>
     <ClInclude Include="ECS\Components\CameraComponent.h">
       <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Systems\ScriptSystem.h">
+      <Filter>ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\ScriptComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Scripts\Script.h">
+      <Filter>ECS\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
