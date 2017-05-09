@@ -13,7 +13,7 @@ namespace ECS { namespace Components {
 		glm::mat4 GetWorldTransform()
 		{
 			if (this->parent == NULL) return this->matrix;
-			return this->matrix * this->parent->GetWorldTransform();
+			return this->parent->GetWorldTransform() * this->matrix;
 		}
 		void SetWorldTransform(const glm::mat4 & matrix)
 		{
@@ -23,7 +23,7 @@ namespace ECS { namespace Components {
 			}
 			else
 			{
-				this->matrix = matrix * glm::inverse(this->parent->GetWorldTransform());
+				this->matrix = glm::inverse(this->parent->GetWorldTransform()) * matrix;
 			}
 		}
 		TransformComponent * GetParent() { return this->parent; }
