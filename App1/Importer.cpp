@@ -109,6 +109,7 @@ ECS::Entity * ModelImporter::LoadModel(ECS::World * world, const std::string & p
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_CalcTangentSpace |
 		aiProcess_GenSmoothNormals |
+		aiProcess_OptimizeMeshes |
 		aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{

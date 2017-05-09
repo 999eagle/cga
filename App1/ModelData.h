@@ -13,6 +13,7 @@ class Material
 {
 public:
 	Material(const std::vector<std::shared_ptr<Texture>> & textures);
+	~Material() { }
 	void Use(const Shader & shader) const;
 	static inline void InitNull();
 private:
