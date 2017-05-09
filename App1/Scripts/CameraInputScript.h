@@ -50,6 +50,10 @@ namespace Scripts
 				this->position += right * moveSpeed;
 			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 				this->position -= right * moveSpeed;
+			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+				this->position += up * moveSpeed;
+			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+				this->position -= up * moveSpeed;
 
 			auto newTransform = glm::translate(glm::mat4(), this->position);
 			newTransform = glm::rotate(newTransform, -this->currentYaw, glm::vec3(0.f, 1.f, 0.f));
