@@ -197,6 +197,7 @@
     <ClInclude Include="ECS\World.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Lights\AmbientLight.h" />
+    <ClInclude Include="Lights\DirectionalLight.h" />
     <ClInclude Include="Lights\ILight.h" />
     <ClInclude Include="Lights\PointLight.h" />
     <ClInclude Include="ModelData.h" />
@@ -211,6 +212,7 @@
     <None Include="Shader\ambientLight.fs.glsl" />
     <None Include="Shader\deferredGeometry.fs.glsl" />
     <None Include="Shader\deferredGeometry.vs.glsl" />
+    <None Include="Shader\directionalLight.fs.glsl" />
     <None Include="Shader\passthrough.vs.glsl" />
     <None Include="Shader\pointLight.fs.glsl" />
     <None Include="Shader\postGamma.fs.glsl" />

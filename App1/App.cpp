@@ -9,6 +9,7 @@
 #include "ECS\Components\CameraComponent.h"
 #include "Lights\AmbientLight.h"
 #include "Lights\PointLight.h"
+#include "Lights\DirectionalLight.h"
 #include "ECS\Systems\ScriptSystem.h"
 
 #include "Scripts\CameraInputScript.h"
@@ -81,7 +82,7 @@ void App::LoadContent()
 
 	e = new ECS::Entity();
 	auto lightRootTransform = e->GetComponent<ECS::Components::TransformComponent>();
-	e->AddComponent<ECS::Components::LightComponent>(new AmbientLight(glm::vec3(0.005f, 0.005f, 0.005f)));
+	e->AddComponent<ECS::Components::LightComponent>(new DirectionalLight(glm::vec3(.1f, .1f, .1f), glm::vec3(-1.f, -1.f, -1.f)));
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
 	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0f, 0.3f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.9f));

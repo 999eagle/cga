@@ -127,6 +127,9 @@
     <ClInclude Include="Scripts\CameraInputScript.h">
       <Filter>Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="Lights\DirectionalLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">
@@ -151,6 +154,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\postGamma.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\directionalLight.fs.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>
