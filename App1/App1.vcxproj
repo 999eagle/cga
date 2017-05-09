@@ -159,7 +159,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="ECS\Component.cpp" />
     <ClCompile Include="ECS\Entity.cpp" />
@@ -183,7 +182,6 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="AppTime.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="Common\ShaderStructures.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="ECS\Component.h" />
