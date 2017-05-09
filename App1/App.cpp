@@ -102,8 +102,11 @@ void App::LoadContent()
 	e = (*e->GetComponent<ECS::Components::TransformComponent>()->GetChildren().begin())->GetEntity();
 	e->GetComponent<ECS::Components::MaterialComponent>()->material = MaterialImporter::GetInstance().LoadMaterial("Content\\Material\\rustediron2\\material.mat");
 
-	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\nanosuit\\nanosuit.obj");
-	e->GetComponent<ECS::Components::TransformComponent>()->SetLocalTransform(glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f)));
+	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\girl\\Beautiful Girl.3ds");
+	auto transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	auto t = transformComponent->GetLocalTransform();
+	t = glm::scale(glm::mat4(), glm::vec3(.03f, .03f, .03f)) * t;
+	transformComponent->SetLocalTransform(t);
 }
 
 void App::UnloadContent()
