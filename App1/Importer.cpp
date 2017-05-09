@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Importer.h"
 
+#include "ECS\Components\ModelComponents.h"
+#include "ECS\Entity.h"
+#include "ECS\Components\TransformComponent.h"
+
 std::shared_ptr<Texture> TextureImporter::LoadTexture(const std::string & path, aiTextureType type)
 {
 	auto it = this->loadedTextures.find(path);
@@ -95,19 +99,7 @@ std::shared_ptr<Material> MaterialImporter::LoadMaterial(const std::string & mat
 	return newMat;
 }
 
-std::shared_ptr<Model<ModelImporter::VertexType>> ModelImporter::LoadModel(const std::string & path)
-{
-	auto it = this->loadedModels.find(path);
-	if (it != this->loadedModels.end())
-	{
-		return it->second;
-	}
-	auto model = this->LoadModelImplementation(path);
-	this->loadedModels.insert(std::make_pair(path, model));
-	return model;
-}
-
-std::shared_ptr<Model<ModelImporter::VertexType>> ModelImporter::LoadModelImplementation(const std::string & path)
+ECS::Entity * ModelImporter::LoadModel(ECS::World * world, const std::string & path)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path,
@@ -117,32 +109,47 @@ std::shared_ptr<Model<ModelImporter::VertexType>> ModelImporter::LoadModelImplem
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_CalcTangentSpace |
 		aiProcess_GenSmoothNormals |
+		aiProcess_OptimizeMeshes |
 		aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		std::cerr << "Import error in file " << path << ": " << importer.GetErrorString() << std::endl;
 		return NULL;
 	}
-	modelDataVector modelData;
 	std::string directory = path.substr(0, path.find_last_of("\\/") + 1);
 	std::string name = path;
-	this->ProcessNode(modelData, scene->mRootNode, scene, directory, name);
-	return std::make_shared<Model<VertexType>>(modelData);
+	return this->ProcessNode(world, scene->mRootNode, scene, directory, name);
 }
 
-void ModelImporter::ProcessNode(modelDataVector & modelData, const aiNode * node, const aiScene * scene, const std::string & directory, const std::string & name)
+ECS::Entity * ModelImporter::ProcessNode(ECS::World * world, const aiNode * node, const aiScene * scene, const std::string & directory, const std::string & name)
 {
-	for (uint32_t i = 0; i < node->mNumMeshes; i++)
+	auto entity = new ECS::Entity();
+	world->AddEntity(entity);
+	auto transform = entity->GetComponent<ECS::Components::TransformComponent>();
+	transform->SetLocalTransform(glm::transpose(glm::make_mat4(&(node->mTransformation.a1))));
+	if (node->mNumMeshes == 1)
 	{
-		this->ProcessMesh(modelData, scene->mMeshes[node->mMeshes[i]], scene, directory, name);
+		this->ProcessMesh(entity, scene->mMeshes[node->mMeshes[0]], scene, directory, name);
+	}
+	else
+	{
+		for (uint32_t i = 0; i < node->mNumMeshes; i++)
+		{
+			auto childEntity = new ECS::Entity();
+			world->AddEntity(childEntity);
+			childEntity->GetComponent<ECS::Components::TransformComponent>()->SetParent(transform);
+			this->ProcessMesh(childEntity, scene->mMeshes[node->mMeshes[i]], scene, directory, name);
+		}
 	}
 	for (uint32_t i = 0; i < node->mNumChildren; i++)
 	{
-		this->ProcessNode(modelData, node->mChildren[i], scene, directory, name);
+		auto child = this->ProcessNode(world, node->mChildren[i], scene, directory, name);
+		child->GetComponent<ECS::Components::TransformComponent>()->SetParent(transform);
 	}
+	return entity;
 }
 
-void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh, const aiScene * scene, const std::string & directory, const std::string & name)
+void ModelImporter::ProcessMesh(ECS::Entity * entity, const aiMesh * mesh, const aiScene * scene, const std::string & directory, const std::string & name)
 {
 	std::vector<VertexType> vertices;
 	std::vector<GLuint> indices;
@@ -189,7 +196,8 @@ void ModelImporter::ProcessMesh(modelDataVector & modelData, const aiMesh * mesh
 	this->LoadTextures(textures, mat, aiTextureType_SHININESS, directory);
 	auto newMesh = std::make_shared<Mesh<VertexType>>(vertices, indices, name + "\\" + mesh->mName.C_Str());
 	auto material = std::make_shared<Material>(textures);
-	modelData.push_back(std::make_pair(newMesh, material));
+	entity->AddComponent<ECS::Components::MeshComponent<VertexType>>(newMesh);
+	entity->AddComponent<ECS::Components::MaterialComponent>(material);
 }
 
 void ModelImporter::LoadTextures(std::vector<std::shared_ptr<Texture>> & textures, const aiMaterial * material, aiTextureType type, const std::string & directory)

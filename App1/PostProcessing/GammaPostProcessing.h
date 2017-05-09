@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Shader.h"
-#include "Common\ShaderStructures.h"
-#include "QuadRenderer.h"
+#include "..\Shader.h"
+#include "..\Common\ShaderStructures.h"
+#include "..\QuadRenderer.h"
 
 class GammaPostProcessing
 {

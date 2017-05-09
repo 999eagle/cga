@@ -1,9 +1,9 @@
 #pragma once
 
 #include "ILight.h"
-#include "Shader.h"
-#include "Common\ShaderStructures.h"
-#include "QuadRenderer.h"
+#include "..\Shader.h"
+#include "..\Common\ShaderStructures.h"
+#include "..\QuadRenderer.h"
 
 class AmbientLight : public ILight
 {

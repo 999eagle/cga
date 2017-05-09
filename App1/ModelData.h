@@ -13,6 +13,7 @@ class Material
 {
 public:
 	Material(const std::vector<std::shared_ptr<Texture>> & textures);
+	~Material() { }
 	void Use(const Shader & shader) const;
 	static inline void InitNull();
 private:
@@ -41,16 +42,6 @@ private:
 			glVertexAttribPointer(index++, size, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)VertexAttribute<VertexType, attribute>::offset);
 		}
 	}
-};
-
-template<typename VertexType>
-class Model
-{
-public:
-	Model(const std::vector<std::pair<std::shared_ptr<Mesh<VertexType>>, std::shared_ptr<Material>>> & meshes) : meshes(meshes) { }
-	void Draw(const Shader & shader) const;
-	std::vector<std::pair<std::shared_ptr<Mesh<VertexType>>, std::shared_ptr<Material>>> meshes;
-private:
 };
 
 
@@ -104,14 +95,4 @@ void Mesh<VertexType>::Draw() const
 	glBindVertexArray(this->vertexArrayId);
 	glDrawElements(GL_TRIANGLES, (GLsizei)this->indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-}
-
-template<typename VertexType>
-void Model<VertexType>::Draw(const Shader & shader) const
-{
-	for (auto it = this->meshes.begin(); it != this->meshes.end(); it++)
-	{
-		it->second->Use(shader);
-		it->first->Draw();
-	}
 }

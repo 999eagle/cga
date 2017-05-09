@@ -2,6 +2,16 @@
 #include "App.h"
 
 #include "Importer.h"
+#include "ECS\Systems\RenderSystem.h"
+#include "ECS\Components\LightComponent.h"
+#include "ECS\Components\TransformComponent.h"
+#include "ECS\Components\ModelComponents.h"
+#include "ECS\Components\CameraComponent.h"
+#include "Lights\AmbientLight.h"
+#include "Lights\PointLight.h"
+#include "ECS\Systems\ScriptSystem.h"
+
+#include "Scripts\CameraInputScript.h"
 
 App* App::currentApp = NULL;
 
@@ -50,9 +60,9 @@ bool App::Initialize(int width, int height, const char* title)
 
 	glfwSetKeyCallback(window, App::StaticKeyCallback);
 
-	this->deferredRenderer = std::make_unique<DeferredRenderer>(width, height);
-	this->postProcessing = std::make_unique<PostProcessing>(width, height);
-	this->camera = std::unique_ptr<Camera>(new Camera(this->window, width, height, 45.0, 0.1, 100.0));
+	this->world = std::make_unique<ECS::World>();
+	this->world->AddSystem<ECS::Systems::ScriptSystem>(this->window);
+	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height);
 
 	App::currentApp = this;
 	return true;
@@ -60,12 +70,43 @@ bool App::Initialize(int width, int height, const char* title)
 
 void App::LoadContent()
 {
-	this->lights.push_back(std::unique_ptr<ILight>(new AmbientLight(glm::vec3(0.005, 0.005, 0.005))));
-	this->lights.push_back(std::unique_ptr<ILight>(new PointLight(glm::vec3(0.3, 0.3, 0.3), glm::vec3(1.0, 1.0, 0.0), 2.5)));
-	this->ground = ModelImporter::GetInstance().LoadModel("Content\\Model\\ground.obj");
-	this->ground->meshes[0].second = MaterialImporter::GetInstance().LoadMaterial("Content\\Material\\rustediron2\\material.mat");
-	this->nanosuit = ModelImporter::GetInstance().LoadModel("Content\\Model\\nanosuit\\nanosuit.obj");
-	this->gammaPostProc = std::make_unique<GammaPostProcessing>();
+	auto e = new ECS::Entity();
+	e->AddComponent<ECS::Components::CameraComponent>(45.0f, 1270.f / 720.f, 0.1f, 100.0f);
+	e->GetComponent<ECS::Components::TransformComponent>()->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
+	e->AddComponent<ECS::Components::ScriptComponent>();
+	e->GetComponent<ECS::Components::ScriptComponent>()->AddScript<Scripts::CameraInputScript>(this->window);
+	this->world->AddEntity(e);
+
+	e = new ECS::Entity();
+	auto lightRootTransform = e->GetComponent<ECS::Components::TransformComponent>();
+	e->AddComponent<ECS::Components::LightComponent>(new AmbientLight(glm::vec3(0.005f, 0.005f, 0.005f)));
+	this->world->AddEntity(e);
+	e = new ECS::Entity();
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0f, 0.3f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.9f));
+	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
+	this->world->AddEntity(e);
+	e = new ECS::Entity();
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3f, 0.0f, 0.0f), glm::vec3(-1.0f, 1.0f, 0.0f), 0.9f));
+	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
+	this->world->AddEntity(e);
+	e = new ECS::Entity();
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0f, 0.0f, 0.3f), glm::vec3(0.0f, 1.0f, 1.0f), 0.9f));
+	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
+	this->world->AddEntity(e);
+	e = new ECS::Entity();
+	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3f, 0.3f, 0.0f), glm::vec3(0.0f, 1.0f, -1.0f), 0.9f));
+	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
+	this->world->AddEntity(e);
+
+	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\ground.obj");
+	e = (*e->GetComponent<ECS::Components::TransformComponent>()->GetChildren().begin())->GetEntity();
+	e->GetComponent<ECS::Components::MaterialComponent>()->material = MaterialImporter::GetInstance().LoadMaterial("Content\\Material\\rustediron2\\material.mat");
+
+	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\girl\\Beautiful Girl.3ds");
+	auto transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	auto t = transformComponent->GetLocalTransform();
+	t = glm::scale(glm::mat4(), glm::vec3(.03f, .03f, .03f)) * t;
+	transformComponent->SetLocalTransform(t);
 }
 
 void App::UnloadContent()
@@ -112,7 +153,6 @@ void App::GameLoop()
 		appTime.SetElapsedTicks(tickDelta);
 		appTime.SetTotalTicks(totalTicks + leftoverTicks);
 		this->Update(appTime);
-		this->Draw(appTime);
 
 		glfwSwapBuffers(this->window);
 	}
@@ -131,6 +171,7 @@ void App::KeyCallback(GLFWwindow * window, int key, int scancode, int action, in
 
 void App::FixedUpdate(const AppTime & time)
 {
+	this->world->FixedUpdate(time);
 }
 
 void App::Update(const AppTime & time)
@@ -138,39 +179,6 @@ void App::Update(const AppTime & time)
 	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(this->window, GL_TRUE);
 
-	this->camera->Update(time, this->window);
-}
-
-void App::Draw(const AppTime & time)
-{
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
-	glEnable(GL_CULL_FACE);
-
-	glm::mat4 world;
-	GLint worldMatrixLocation = this->deferredRenderer->GetWorldMatrixLocation();
-	this->deferredRenderer->StartGeometryPass(this->camera->GetViewProj());
-
-	glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(world));
-	this->ground->Draw(this->deferredRenderer->GetGeometryShader());
-
-	world = glm::scale(world, glm::vec3(0.1, 0.1, 0.1));
-	glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(world));
-	this->nanosuit->Draw(this->deferredRenderer->GetGeometryShader());
-
-	this->deferredRenderer->EndGeometryPass();
-	this->postProcessing->BindFramebuffer();
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	this->deferredRenderer->StartLightPass();
-
-	for (auto it = this->lights.begin(); it != this->lights.end(); it++)
-	{
-		(*it)->Draw(this->camera->GetInverseViewProj(), this->camera->GetPosition());
-	}
-
-	this->deferredRenderer->EndLightPass();
-	this->postProcessing->BindFramebuffer();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	this->gammaPostProc->Draw();
+	//this->camera->Update(time, this->window);
+	this->world->Update(time);
 }

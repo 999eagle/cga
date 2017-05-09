@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ModelData.h"
+#include "ECS\Entity.h"
+#include "ECS\World.h"
 
 class TextureImporter
 {
@@ -39,20 +41,15 @@ public:
 	typedef
 		VertexPositionTextureNTB
 		VertexType;
-	typedef
-		std::vector<std::pair<std::shared_ptr<Mesh<VertexType>>, std::shared_ptr<Material>>>
-		modelDataVector;
-	std::shared_ptr<Model<VertexType>> LoadModel(const std::string & path);
+	ECS::Entity *  LoadModel(ECS::World * world, const std::string & path);
 	static ModelImporter & GetInstance()
 	{
 		static ModelImporter instance;
 		return instance;
 	}
 private:
-	std::map<std::string, std::shared_ptr<Model<VertexType>>> loadedModels;
 	ModelImporter() { }
-	std::shared_ptr<Model<VertexType>> LoadModelImplementation(const std::string & path);
-	void ProcessNode(modelDataVector & modelData, const aiNode * node, const aiScene * scene, const std::string & directory, const std::string & name);
-	void ProcessMesh(modelDataVector & modelData, const aiMesh * mesh, const aiScene * scene, const std::string & directory, const std::string & name);
+	ECS::Entity * ProcessNode(ECS::World * world, const aiNode * node, const aiScene * scene, const std::string & directory, const std::string & name);
+	void ProcessMesh(ECS::Entity * entity, const aiMesh * mesh, const aiScene * scene, const std::string & directory, const std::string & name);
 	void LoadTextures(std::vector<std::shared_ptr<Texture>> & textures, const aiMaterial * material, aiTextureType type, const std::string & directory);
 };

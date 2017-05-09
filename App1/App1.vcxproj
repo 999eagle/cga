@@ -159,8 +159,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="ECS\Component.cpp" />
+    <ClCompile Include="ECS\Entity.cpp" />
+    <ClCompile Include="ECS\System.cpp" />
+    <ClCompile Include="ECS\Systems\RenderSystem.cpp" />
+    <ClCompile Include="ECS\Systems\ScriptSystem.cpp" />
+    <ClCompile Include="ECS\World.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelData.cpp" />
@@ -170,25 +175,36 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PostProcessing.cpp" />
+    <ClCompile Include="PostProcessing\PostProcessing.cpp" />
     <ClCompile Include="QuadRenderer.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AmbientLight.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="AppTime.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="Common\ShaderStructures.h" />
     <ClInclude Include="DeferredRenderer.h" />
-    <ClInclude Include="GammaPostProcessing.h" />
-    <ClInclude Include="ILight.h" />
+    <ClInclude Include="ECS\Component.h" />
+    <ClInclude Include="ECS\Components\CameraComponent.h" />
+    <ClInclude Include="ECS\Components\LightComponent.h" />
+    <ClInclude Include="ECS\Components\ModelComponents.h" />
+    <ClInclude Include="ECS\Components\ScriptComponent.h" />
+    <ClInclude Include="ECS\Components\TransformComponent.h" />
+    <ClInclude Include="ECS\Entity.h" />
+    <ClInclude Include="ECS\System.h" />
+    <ClInclude Include="ECS\Systems\RenderSystem.h" />
+    <ClInclude Include="ECS\Systems\ScriptSystem.h" />
+    <ClInclude Include="ECS\World.h" />
     <ClInclude Include="Importer.h" />
+    <ClInclude Include="Lights\AmbientLight.h" />
+    <ClInclude Include="Lights\ILight.h" />
+    <ClInclude Include="Lights\PointLight.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="pch\pch.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="PostProcessing.h" />
+    <ClInclude Include="PostProcessing\GammaPostProcessing.h" />
+    <ClInclude Include="PostProcessing\PostProcessing.h" />
     <ClInclude Include="QuadRenderer.h" />
+    <ClInclude Include="Scripts\CameraInputScript.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
