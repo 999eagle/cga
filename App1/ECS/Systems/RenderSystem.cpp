@@ -9,6 +9,7 @@
 using namespace ECS::Systems;
 
 RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight)
+	: windowWidth(windowWidth), windowHeight(windowHeight)
 {
 	this->renderer = new DeferredRenderer(windowWidth, windowHeight);
 	this->postProcessing = new PostProcessing(windowWidth, windowHeight);
@@ -16,6 +17,7 @@ RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight)
 	this->lightShaderAmbient = new Shader("Shader\\passthrough.vs.glsl", "Shader\\ambientLight.fs.glsl");
 	this->lightShaderPoint = new Shader("Shader\\passthrough.vs.glsl", "Shader\\pointLight.fs.glsl");
 	this->lightShaderDirectional = new Shader("Shader\\passthrough.vs.glsl", "Shader\\directionalLight.fs.glsl");
+	this->shadowMapShader = new Shader("Shader\\simple.vs.glsl", "Shader\\empty.fs.glsl");
 }
 
 RenderSystem::~RenderSystem()
@@ -26,6 +28,7 @@ RenderSystem::~RenderSystem()
 	delete this->lightShaderAmbient;
 	delete this->lightShaderPoint;
 	delete this->lightShaderDirectional;
+	delete this->shadowMapShader;
 }
 
 void RenderSystem::Update(ECS::World & world, const AppTime & time)
@@ -62,6 +65,8 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	std::vector<ECS::Components::LightComponent*> ambientLights;
 	std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> pointLights;
 	std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> directionalLights;
+	std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> shadowMapLights;
+	std::vector<std::pair<ECS::Components::MeshComponent<VertexType>*, glm::mat4>> meshes;
 
 	for (auto * it : world.GetEntities())
 	{
@@ -74,6 +79,7 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 			glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(transform));
 			material->material->Use(geometryShader);
 			mesh->mesh->Draw();
+			meshes.push_back(std::make_pair(mesh, transform));
 		}
 		if (light != NULL)
 		{
@@ -89,10 +95,39 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 				directionalLights.push_back(std::make_pair(light, transform));
 				break;
 			}
+			if (light->shadowMapResolution > 0)
+			{
+				shadowMapLights.push_back(std::make_pair(light, transform));
+			}
 		}
 	}
 
 	this->renderer->EndGeometryPass();
+
+	if (!shadowMapLights.empty())
+	{
+		this->shadowMapShader->Apply();
+		auto worldLocation = this->shadowMapShader->GetUniformLocation("world");
+		auto viewProjLocation = this->shadowMapShader->GetUniformLocation("viewProj");
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		for (auto it : shadowMapLights)
+		{
+			glViewport(0, 0, it.first->shadowMapResolution, it.first->shadowMapResolution);
+			glBindFramebuffer(GL_FRAMEBUFFER, it.first->shadowMapFramebufferId);
+			glClearDepth(1.f);
+			glClear(GL_DEPTH_BUFFER_BIT);
+			auto viewProj = glm::ortho(-10.f, 10.f, -10.f, 10.f) * glm::inverse(it.second);
+			glUniformMatrix4fv(viewProjLocation, 1, GL_FALSE, glm::value_ptr(viewProj));
+			for (auto mesh : meshes)
+			{
+				glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mesh.second));
+				mesh.first->mesh->Draw();
+			}
+		}
+		glViewport(0, 0, this->windowWidth, this->windowHeight);
+		glDisable(GL_DEPTH_TEST);
+	}
 
 	this->postProcessing->BindFramebuffer();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -131,8 +166,24 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 		this->ApplyLightShader(this->lightShaderDirectional, camPos, invViewProj);
 		auto colorLocation = this->lightShaderDirectional->GetUniformLocation("lightColor");
 		auto directionLocation = this->lightShaderDirectional->GetUniformLocation("lightDirection");
+		auto shadowMapTextureLocation = this->lightShaderDirectional->GetUniformLocation("shadowMapTexture");
+		auto viewProjLocation = this->lightShaderDirectional->GetUniformLocation("lightViewProj");
+		auto enableShadowMapLocation = this->lightShaderDirectional->GetUniformLocation("enableShadowMap");
+		glActiveTexture(GL_TEXTURE6);
 		for (auto it : directionalLights)
 		{
+			if (it.first->shadowMapResolution > 0)
+			{
+				glBindTexture(GL_TEXTURE_2D, it.first->shadowMapTextureId);
+				glUniform1i(shadowMapTextureLocation, 6);
+				glUniform1i(enableShadowMapLocation, GL_TRUE);
+				auto viewProj = glm::ortho(-10.f, 10.f, -10.f, 10.f) * glm::inverse(it.second);
+				glUniformMatrix4fv(viewProjLocation, 1, GL_FALSE, glm::value_ptr(viewProj));
+			}
+			else
+			{
+				glUniform1i(enableShadowMapLocation, GL_FALSE);
+			}
 			auto direction = it.second * glm::vec4(0.f, 0.f, -1.f, 0.f);
 			glUniform3fv(colorLocation, 1, glm::value_ptr(it.first->color));
 			glUniform3fv(directionLocation, 1, glm::value_ptr(direction));

@@ -13,6 +13,10 @@ uniform vec3 cameraPosition;
 uniform vec3 lightColor;
 uniform vec3 lightDirection;
 
+uniform sampler2D shadowMapTexture;
+uniform mat4 lightViewProj;
+uniform bool enableShadowMap;
+
 struct Fragment
 {
 	vec3 worldPos;
@@ -78,10 +82,8 @@ float G_Smith(float ndv, float ndl, float roughness)
 }
 
 // cook torrance BRDF
-vec3 BRDF_CookTorrance(Fragment fragment, vec3 cameraPos, vec3 lightDir)
+vec3 BRDF_CookTorrance(Fragment fragment, vec3 viewDir, vec3 lightDir)
 {
-	vec3 viewDir = normalize(cameraPos - fragment.worldPos);
-
 	vec3 h = normalize(viewDir + lightDir);
 	float ndl = max(dot(fragment.normal, lightDir), 0.0);
 	float ndv = max(dot(fragment.normal, viewDir), 0.0);
@@ -101,8 +103,24 @@ vec3 BRDF_CookTorrance(Fragment fragment, vec3 cameraPos, vec3 lightDir)
 void main()
 {
 	Fragment fragment = ReadGBuffer();
+	
+	vec3 viewDir = normalize(cameraPosition - fragment.worldPos);
+	vec3 lightDir = normalize(-lightDirection);
 
-	vec3 brdf = BRDF_CookTorrance(fragment, cameraPosition, normalize(-lightDirection));
+	if (enableShadowMap)
+	{
+		vec4 lightFragment = lightViewProj * vec4(fragment.worldPos, 1.0);
+		lightFragment /= lightFragment.w;
+		lightFragment.xyz = lightFragment.xyz * 0.5 + 0.5;
+		float lightDepth = texture(shadowMapTexture, lightFragment.xy).r;
+		float bias = max(0.05 * (1.0 - dot(fragment.normal, lightDir)), 0.005);
+		if (lightFragment.z - bias > lightDepth)
+		{
+			discard;
+		}
+	}
+
+	vec3 brdf = BRDF_CookTorrance(fragment, viewDir, lightDir);
 
 	brdf *= lightColor;
 

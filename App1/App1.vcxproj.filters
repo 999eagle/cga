@@ -120,9 +120,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\simple.fs.glsl">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="Shader\simple.vs.glsl">
       <Filter>Shader</Filter>
     </None>
@@ -145,6 +142,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\directionalLight.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\empty.fs.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

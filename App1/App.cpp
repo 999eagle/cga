@@ -84,7 +84,7 @@ void App::LoadContent()
 	e = new ECS::Entity();
 	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
 	transformComponent->SetLocalTransform(glm::mat4_cast(rotateForwardTo(glm::vec3(-1.f, -1.f, 0.f))));
-	e->AddComponent<ECS::Components::LightComponent>(ECS::Components::LightType_Directional, glm::vec3(.5f, .5f, .5f));
+	e->AddComponent<ECS::Components::LightComponent>(ECS::Components::LightType_Directional, glm::vec3(.75f, .75f, .75f), 4096);
 	this->world->AddEntity(e);
 
 	// point lights

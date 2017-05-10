@@ -22,11 +22,13 @@ namespace ECS { namespace Systems
 		void FixedUpdate(World & world, const AppTime & time) { }
 		void ApplyLightShader(Shader * shader, const glm::vec3 & cameraPosition, const glm::mat4 & invViewProj);
 	private:
+		GLsizei windowWidth, windowHeight;
 		DeferredRenderer * renderer;
 		PostProcessing * postProcessing;
 		GammaPostProcessing * gammaPost;
 		Shader * lightShaderAmbient;
 		Shader * lightShaderDirectional;
 		Shader * lightShaderPoint;
+		Shader * shadowMapShader;
 	};
 }}
