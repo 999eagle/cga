@@ -13,6 +13,7 @@
 #include "ECS\Systems\ScriptSystem.h"
 
 #include "Scripts\CameraInputScript.h"
+#include "Common\util.h"
 
 App* App::currentApp = NULL;
 

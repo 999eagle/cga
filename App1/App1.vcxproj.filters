@@ -130,6 +130,9 @@
     <ClInclude Include="Lights\DirectionalLight.h">
       <Filter>Lights</Filter>
     </ClInclude>
+    <ClInclude Include="Common\util.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.fs.glsl">
