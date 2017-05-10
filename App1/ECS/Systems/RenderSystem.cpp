@@ -13,6 +13,9 @@ RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight)
 	this->renderer = new DeferredRenderer(windowWidth, windowHeight);
 	this->postProcessing = new PostProcessing(windowWidth, windowHeight);
 	this->gammaPost = new GammaPostProcessing();
+	this->lightShaderAmbient = new Shader("Shader\\passthrough.vs.glsl", "Shader\\ambientLight.fs.glsl");
+	this->lightShaderPoint = new Shader("Shader\\passthrough.vs.glsl", "Shader\\pointLight.fs.glsl");
+	this->lightShaderDirectional = new Shader("Shader\\passthrough.vs.glsl", "Shader\\directionalLight.fs.glsl");
 }
 
 RenderSystem::~RenderSystem()
@@ -20,6 +23,9 @@ RenderSystem::~RenderSystem()
 	delete this->renderer;
 	delete this->postProcessing;
 	delete this->gammaPost;
+	delete this->lightShaderAmbient;
+	delete this->lightShaderPoint;
+	delete this->lightShaderDirectional;
 }
 
 void RenderSystem::Update(ECS::World & world, const AppTime & time)
@@ -53,33 +59,99 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	this->renderer->StartGeometryPass(viewProj);
 	auto geometryShader = this->renderer->GetGeometryShader();
 
+	std::vector<ECS::Components::LightComponent*> ambientLights;
+	std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> pointLights;
+	std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> directionalLights;
+
 	for (auto * it : world.GetEntities())
 	{
 		auto mesh = it->GetComponent<ECS::Components::MeshComponent<VertexType>>();
 		auto material = it->GetComponent<ECS::Components::MaterialComponent>();
+		auto light = it->GetComponent<ECS::Components::LightComponent>();
+		auto transform = it->GetComponent<ECS::Components::TransformComponent>()->GetWorldTransform();
 		if (mesh != NULL && material != NULL)
 		{
-			auto transform = it->GetComponent<ECS::Components::TransformComponent>()->GetWorldTransform();
 			glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(transform));
 			material->material->Use(geometryShader);
 			mesh->mesh->Draw();
 		}
+		if (light != NULL)
+		{
+			switch (light->type)
+			{
+			case ECS::Components::LightType_Ambient:
+				ambientLights.push_back(light);
+				break;
+			case ECS::Components::LightType_Point:
+				pointLights.push_back(std::make_pair(light, transform));
+				break;
+			case ECS::Components::LightType_Directional:
+				directionalLights.push_back(std::make_pair(light, transform));
+				break;
+			}
+		}
 	}
 
 	this->renderer->EndGeometryPass();
+
 	this->postProcessing->BindFramebuffer();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	this->renderer->StartLightPass();
 
-	for (auto * it : world.GetEntities())
+	auto quadRenderer = QuadRenderer::GetInstance();
+	if (!ambientLights.empty())
 	{
-		auto light = it->GetComponent<ECS::Components::LightComponent>();
-		if (light != NULL) light->light->Draw(invViewProj, camPos);
+		this->ApplyLightShader(this->lightShaderAmbient, camPos, invViewProj);
+		auto colorLocation = this->lightShaderAmbient->GetUniformLocation("lightColor");
+		for (auto * it : ambientLights)
+		{
+			glUniform3fv(colorLocation, 1, glm::value_ptr(it->color));
+			quadRenderer.DrawFullscreenQuad();
+		}
+	}
+	if (!pointLights.empty())
+	{
+		this->ApplyLightShader(this->lightShaderPoint, camPos, invViewProj);
+		auto colorLocation = this->lightShaderPoint->GetUniformLocation("lightColor");
+		auto positionLocation = this->lightShaderPoint->GetUniformLocation("lightPosition");
+		auto radiusLocation = this->lightShaderPoint->GetUniformLocation("lightRadius");
+		for (auto it : pointLights)
+		{
+			auto position = it.second * glm::vec4(0.f, 0.f, 0.f, 1.f);
+			auto scale = it.second[0].x;
+			glUniform3fv(colorLocation, 1, glm::value_ptr(it.first->color));
+			glUniform3fv(positionLocation, 1, glm::value_ptr(position));
+			glUniform1f(radiusLocation, scale);
+			quadRenderer.DrawFullscreenQuad();
+		}
+	}
+	if (!directionalLights.empty())
+	{
+		this->ApplyLightShader(this->lightShaderDirectional, camPos, invViewProj);
+		auto colorLocation = this->lightShaderDirectional->GetUniformLocation("lightColor");
+		auto directionLocation = this->lightShaderDirectional->GetUniformLocation("lightDirection");
+		for (auto it : directionalLights)
+		{
+			auto direction = it.second * glm::vec4(0.f, 0.f, -1.f, 0.f);
+			glUniform3fv(colorLocation, 1, glm::value_ptr(it.first->color));
+			glUniform3fv(directionLocation, 1, glm::value_ptr(direction));
+			quadRenderer.DrawFullscreenQuad();
+		}
 	}
 
 	this->renderer->EndLightPass();
 	this->postProcessing->BindFramebuffer();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	this->gammaPost->Draw();
+}
+
+void ECS::Systems::RenderSystem::ApplyLightShader(Shader * shader, const glm::vec3 & cameraPosition, const glm::mat4 & invViewProj)
+{
+	shader->Apply();
+	glUniform1i(shader->GetUniformLocation("colorTexture"), 0);
+	glUniform1i(shader->GetUniformLocation("normalTexture"), 1);
+	glUniform1i(shader->GetUniformLocation("depthTexture"), 2);
+	glUniformMatrix4fv(shader->GetUniformLocation("invViewProj"), 1, GL_FALSE, glm::value_ptr(invViewProj));
+	glUniform3fv(shader->GetUniformLocation("cameraPosition"), 1, glm::value_ptr(cameraPosition));
 }

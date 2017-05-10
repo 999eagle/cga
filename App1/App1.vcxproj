@@ -197,10 +197,6 @@
     <ClInclude Include="ECS\Systems\ScriptSystem.h" />
     <ClInclude Include="ECS\World.h" />
     <ClInclude Include="Importer.h" />
-    <ClInclude Include="Lights\AmbientLight.h" />
-    <ClInclude Include="Lights\DirectionalLight.h" />
-    <ClInclude Include="Lights\ILight.h" />
-    <ClInclude Include="Lights\PointLight.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="pch\pch.h" />
     <ClInclude Include="PostProcessing\GammaPostProcessing.h" />

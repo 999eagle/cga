@@ -19,9 +19,6 @@
     <Filter Include="ECS\Components">
       <UniqueIdentifier>{40882f43-a240-4c73-967d-26860be96639}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Lights">
-      <UniqueIdentifier>{b87ba20e-0f7a-421e-95f4-c67537538f1c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PostProcessing">
       <UniqueIdentifier>{b7459b33-2e60-419e-963a-4720ae5836e0}</UniqueIdentifier>
     </Filter>
@@ -100,15 +97,6 @@
     <ClInclude Include="ECS\Components\LightComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Lights\AmbientLight.h">
-      <Filter>Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Lights\ILight.h">
-      <Filter>Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Lights\PointLight.h">
-      <Filter>Lights</Filter>
-    </ClInclude>
     <ClInclude Include="PostProcessing\GammaPostProcessing.h">
       <Filter>PostProcessing</Filter>
     </ClInclude>
@@ -126,9 +114,6 @@
     </ClInclude>
     <ClInclude Include="Scripts\CameraInputScript.h">
       <Filter>Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="Lights\DirectionalLight.h">
-      <Filter>Lights</Filter>
     </ClInclude>
     <ClInclude Include="Common\util.h">
       <Filter>Common</Filter>
