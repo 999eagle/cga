@@ -21,6 +21,7 @@ PostProcessing::PostProcessing(GLsizei width, GLsizei height)
 #endif
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	this->currentDrawBuffer = 0;
 
 }
 
@@ -32,8 +33,21 @@ PostProcessing::~PostProcessing()
 
 void PostProcessing::BindFramebuffer()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, this->pingpongFramebufferIds[1 - this->lastBound]);
+	glBindFramebuffer(GL_FRAMEBUFFER, this->pingpongFramebufferIds[this->currentDrawBuffer]);
+}
+
+void PostProcessing::BindReadTexture()
+{
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, this->pingpongTextureIds[this->lastBound]);
-	this->lastBound = 1 - this->lastBound;
+	glBindTexture(GL_TEXTURE_2D, this->pingpongTextureIds[1 - this->currentDrawBuffer]);
+}
+
+void PostProcessing::Swap(bool bindBuffers)
+{
+	this->currentDrawBuffer = 1 - this->currentDrawBuffer;
+	if (bindBuffers)
+	{
+		this->BindFramebuffer();
+		this->BindReadTexture();
+	}
 }

@@ -194,9 +194,10 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	}
 
 	this->renderer->EndLightPass();
-	this->postProcessing->BindFramebuffer();
+	this->postProcessing->Swap();
 	this->hdrPost->Draw(.1f);
-	this->postProcessing->BindFramebuffer();
+	this->postProcessing->Swap(false);
+	this->postProcessing->BindReadTexture();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	this->gammaPost->Draw();
 }
