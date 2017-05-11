@@ -147,5 +147,14 @@
     <None Include="Shader\empty.fs.glsl">
       <Filter>Shader</Filter>
     </None>
+    <None Include="Shader\gbuffer.inc.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\pbr.inc.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\shadowMap.inc.glsl">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

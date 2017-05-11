@@ -211,9 +211,12 @@
     <None Include="Shader\deferredGeometry.vs.glsl" />
     <None Include="Shader\directionalLight.fs.glsl" />
     <None Include="Shader\empty.fs.glsl" />
+    <None Include="Shader\gbuffer.inc.glsl" />
     <None Include="Shader\passthrough.vs.glsl" />
+    <None Include="Shader\pbr.inc.glsl" />
     <None Include="Shader\pointLight.fs.glsl" />
     <None Include="Shader\postGamma.fs.glsl" />
+    <None Include="Shader\shadowMap.inc.glsl" />
     <None Include="Shader\simple.vs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,26 +3,11 @@
 
 Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
-	// read files
-	std::stringstream vsStream, fsStream;
-	try
-	{
-		std::ifstream vsFile, fsFile;
-		vsFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-		fsFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-		vsFile.open(vertexShaderPath);
-		fsFile.open(fragmentShaderPath);
-		vsStream << vsFile.rdbuf();
-		fsStream << fsFile.rdbuf();
-		vsFile.close();
-		fsFile.close();
-	}
-	catch (std::ifstream::failure e)
-	{
-		std::cerr << "Couldn't read shader file " << vertexShaderPath << " or " << fragmentShaderPath << std::endl;
-	}
+	this->programId = 0;
 
-	std::string vsCodeStr = vsStream.str(), fsCodeStr = fsStream.str();
+	std::string vsCodeStr, fsCodeStr;
+	if (!this->ReadFile(vertexShaderPath, vsCodeStr)) return;
+	if (!this->ReadFile(fragmentShaderPath, fsCodeStr)) return;
 	const GLchar* vsCode = vsCodeStr.c_str();
 	const GLchar* fsCode = fsCodeStr.c_str();
 
@@ -77,4 +62,51 @@ void Shader::Apply()
 GLint Shader::GetUniformLocation(const GLchar * uniformName) const
 {
 	return glGetUniformLocation(this->programId, uniformName);
+}
+
+bool Shader::ReadFile(const char * filePath, std::string & data)
+{
+	std::stringstream dataStream;
+	std::ifstream file;
+	std::string line;
+	int lineNum = 0;
+	std::string directory = std::string(filePath);
+	directory = directory.substr(0, directory.find_last_of("\\/") + 1);
+	try
+	{
+		file.exceptions(std::ifstream::failbit);
+		file.open(filePath);
+		file.exceptions(std::ifstream::badbit);
+		while (std::getline(file, line))
+		{
+			lineNum++;
+			if (line.find("#include ", 0) == 0)
+			{
+				if (line[9] != '"')
+				{
+					std::cerr << "Error in shader file " << filePath << std::endl << "Line " << lineNum << ": \" expected after #include " << std::endl;
+					return false;
+				}
+				auto closeQuote = line.find('\"', 10);
+				if (closeQuote == std::string::npos)
+				{
+					std::cerr << "Error in shader file " << filePath << std::endl << "Line " << lineNum << ": \" expected before end of line" << std::endl;
+					return false;
+				}
+				if (!this->ReadFile((directory + line.substr(10, closeQuote - 10) + ".inc.glsl").c_str(), line))
+				{
+					return false;
+				}
+			}
+			dataStream << line << std::endl;
+		}
+		file.close();
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cerr << "Couldn't read shader file " << filePath << std::endl;
+		return false;
+	}
+	data = dataStream.str();
+	return true;
 }

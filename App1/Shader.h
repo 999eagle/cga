@@ -6,6 +6,7 @@ public:
 	void Apply();
 	GLint GetUniformLocation(const GLchar* uniformName) const;
 private:
+	bool ReadFile(const char * filePath, std::string & data);
 	GLuint programId;
 };
 
