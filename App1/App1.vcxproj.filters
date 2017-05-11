@@ -58,6 +58,9 @@
     <ClCompile Include="ECS\Systems\ScriptSystem.cpp">
       <Filter>ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessing\BlurRenderer.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -121,6 +124,12 @@
     <ClInclude Include="PostProcessing\Hdr.h">
       <Filter>PostProcessing</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessing\Bloom.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing\BlurRenderer.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.vs.glsl">
@@ -160,6 +169,15 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\postHdr.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\gaussBlur.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\postBloomBrightness.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\postBloomRender.fs.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

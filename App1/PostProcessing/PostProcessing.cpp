@@ -36,9 +36,9 @@ void PostProcessing::BindFramebuffer()
 	glBindFramebuffer(GL_FRAMEBUFFER, this->pingpongFramebufferIds[this->currentDrawBuffer]);
 }
 
-void PostProcessing::BindReadTexture()
+void PostProcessing::BindReadTexture(GLint index)
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + index);
 	glBindTexture(GL_TEXTURE_2D, this->pingpongTextureIds[1 - this->currentDrawBuffer]);
 }
 
