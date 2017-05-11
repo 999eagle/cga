@@ -118,6 +118,9 @@
     <ClInclude Include="Common\util.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessing\Hdr.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.vs.glsl">
@@ -154,6 +157,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\shadowMap.inc.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\postHdr.fs.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

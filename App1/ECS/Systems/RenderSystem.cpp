@@ -14,6 +14,7 @@ RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight)
 	this->renderer = new DeferredRenderer(windowWidth, windowHeight);
 	this->postProcessing = new PostProcessing(windowWidth, windowHeight);
 	this->gammaPost = new GammaPostProcessing();
+	this->hdrPost = new HdrPostProcessing();
 	this->lightShaderAmbient = new Shader("Shader\\passthrough.vs.glsl", "Shader\\ambientLight.fs.glsl");
 	this->lightShaderPoint = new Shader("Shader\\passthrough.vs.glsl", "Shader\\pointLight.fs.glsl");
 	this->lightShaderDirectional = new Shader("Shader\\passthrough.vs.glsl", "Shader\\directionalLight.fs.glsl");
@@ -25,6 +26,7 @@ RenderSystem::~RenderSystem()
 	delete this->renderer;
 	delete this->postProcessing;
 	delete this->gammaPost;
+	delete this->hdrPost;
 	delete this->lightShaderAmbient;
 	delete this->lightShaderPoint;
 	delete this->lightShaderDirectional;
@@ -192,6 +194,8 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	}
 
 	this->renderer->EndLightPass();
+	this->postProcessing->BindFramebuffer();
+	this->hdrPost->Draw(.1f);
 	this->postProcessing->BindFramebuffer();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	this->gammaPost->Draw();

@@ -7,6 +7,7 @@
 #include "..\..\Common\ShaderStructures.h"
 
 #include "..\..\PostProcessing\GammaPostProcessing.h"
+#include "..\..\PostProcessing\Hdr.h"
 
 namespace ECS { namespace Systems
 {
@@ -26,6 +27,7 @@ namespace ECS { namespace Systems
 		DeferredRenderer * renderer;
 		PostProcessing * postProcessing;
 		GammaPostProcessing * gammaPost;
+		HdrPostProcessing * hdrPost;
 		Shader * lightShaderAmbient;
 		Shader * lightShaderDirectional;
 		Shader * lightShaderPoint;

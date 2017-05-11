@@ -200,6 +200,7 @@
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="pch\pch.h" />
     <ClInclude Include="PostProcessing\GammaPostProcessing.h" />
+    <ClInclude Include="PostProcessing\Hdr.h" />
     <ClInclude Include="PostProcessing\PostProcessing.h" />
     <ClInclude Include="QuadRenderer.h" />
     <ClInclude Include="Scripts\CameraInputScript.h" />
@@ -212,6 +213,7 @@
     <None Include="Shader\directionalLight.fs.glsl" />
     <None Include="Shader\empty.fs.glsl" />
     <None Include="Shader\gbuffer.inc.glsl" />
+    <None Include="Shader\postHdr.fs.glsl" />
     <None Include="Shader\passthrough.vs.glsl" />
     <None Include="Shader\pbr.inc.glsl" />
     <None Include="Shader\pointLight.fs.glsl" />
