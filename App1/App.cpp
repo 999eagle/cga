@@ -7,11 +7,10 @@
 #include "ECS\Components\TransformComponent.h"
 #include "ECS\Components\ModelComponents.h"
 #include "ECS\Components\CameraComponent.h"
-#include "Lights\AmbientLight.h"
-#include "Lights\PointLight.h"
 #include "ECS\Systems\ScriptSystem.h"
 
 #include "Scripts\CameraInputScript.h"
+#include "Common\util.h"
 
 App* App::currentApp = NULL;
 
@@ -70,33 +69,53 @@ bool App::Initialize(int width, int height, const char* title)
 
 void App::LoadContent()
 {
-	auto e = new ECS::Entity();
+	ECS::Components::TransformComponent * transformComponent;
 	int width, height;
 	glfwGetWindowSize(this->window, &width, &height);
+
+	auto e = new ECS::Entity();
 	e->AddComponent<ECS::Components::CameraComponent>(45.0f, (float)width / (float)height, 0.1f, 5.0f);
 	e->GetComponent<ECS::Components::TransformComponent>()->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
 	e->AddComponent<ECS::Components::ScriptComponent>();
 	e->GetComponent<ECS::Components::ScriptComponent>()->AddScript<Scripts::CameraInputScript>(this->window);
 	this->world->AddEntity(e);
 
+	// directional light
+	e = new ECS::Entity();
+	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	transformComponent->SetLocalTransform(glm::mat4_cast(rotateForwardTo(glm::vec3(-1.f, -1.f, 0.f))));
+	e->AddComponent<ECS::Components::LightComponent>(ECS::Components::LightType_Directional, glm::vec3(.75f, .75f, .75f), 4096);
+	this->world->AddEntity(e);
+
+	// point lights
 	e = new ECS::Entity();
 	auto lightRootTransform = e->GetComponent<ECS::Components::TransformComponent>();
-	e->AddComponent<ECS::Components::LightComponent>(new AmbientLight(glm::vec3(0.005f, 0.005f, 0.005f)));
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0f, 0.3f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.9f));
+	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	transformComponent->SetParent(lightRootTransform);
+	transformComponent->SetLocalTransform(glm::scale(glm::translate(glm::mat4(), glm::vec3(1.f, 1.f, 0.f)), glm::vec3(.9f, .9f, .9f)));
+	e->AddComponent<ECS::Components::LightComponent>(ECS::Components::LightType_Point, glm::vec3(.0f, .3f, .0f));
+	this->world->AddEntity(e);
+	e = new ECS::Entity();
+	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	transformComponent->SetParent(lightRootTransform);
+	transformComponent->SetLocalTransform(glm::scale(glm::translate(glm::mat4(), glm::vec3(-1.f, 1.f, 0.f)), glm::vec3(.9f, .9f, .9f)));
+	e->AddComponent<ECS::Components::LightComponent>(ECS::Components::LightType_Point, glm::vec3(.3f, .0f, .0f));
 	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3f, 0.0f, 0.0f), glm::vec3(-1.0f, 1.0f, 0.0f), 0.9f));
+	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	transformComponent->SetParent(lightRootTransform);
+	transformComponent->SetLocalTransform(glm::scale(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 1.f)), glm::vec3(.9f, .9f, .9f)));
+	e->AddComponent<ECS::Components::LightComponent>(ECS::Components::LightType_Point, glm::vec3(.0f, .0f, .3f));
 	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
 	this->world->AddEntity(e);
 	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.0f, 0.0f, 0.3f), glm::vec3(0.0f, 1.0f, 1.0f), 0.9f));
-	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
-	this->world->AddEntity(e);
-	e = new ECS::Entity();
-	e->AddComponent<ECS::Components::LightComponent>(new PointLight(glm::vec3(0.3f, 0.3f, 0.0f), glm::vec3(0.0f, 1.0f, -1.0f), 0.9f));
+	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	transformComponent->SetParent(lightRootTransform);
+	transformComponent->SetLocalTransform(glm::scale(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, -1.f)), glm::vec3(.9f, .9f, .9f)));
+	e->AddComponent<ECS::Components::LightComponent>(ECS::Components::LightType_Point, glm::vec3(.3f, .3f, .0f));
 	e->GetComponent<ECS::Components::TransformComponent>()->SetParent(lightRootTransform);
 	this->world->AddEntity(e);
 
@@ -105,7 +124,7 @@ void App::LoadContent()
 	e->GetComponent<ECS::Components::MaterialComponent>()->material = MaterialImporter::GetInstance().LoadMaterial("Content\\Material\\rustediron2\\material.mat");
 
 	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\girl\\Beautiful Girl.3ds");
-	auto transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
 	auto t = transformComponent->GetLocalTransform();
 	t = glm::scale(glm::mat4(), glm::vec3(.03f, .03f, .03f)) * t;
 	transformComponent->SetLocalTransform(t);
