@@ -136,6 +136,9 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	this->postProcessing->BindFramebuffer();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	this->postProcessing->Swap();
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 	this->renderer->StartLightPass();
 
 	auto quadRenderer = QuadRenderer::GetInstance();

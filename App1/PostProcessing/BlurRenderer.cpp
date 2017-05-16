@@ -17,17 +17,33 @@ BlurRenderer::~BlurRenderer()
 	delete this->blurShader;
 }
 
-void BlurRenderer::BlurCurrentlyBoundTexture()
+void BlurRenderer::BlurCurrentlyBoundTexture(int count)
 {
 	this->postProcessing->BindFramebuffer();
-	this->blurShader->Apply();
-	glUniform1i(this->shaderHorizontalLocation, GL_TRUE);
-	QuadRenderer::GetInstance().DrawFullscreenQuad();
-	this->postProcessing->Swap();
-	glUniform1i(this->shaderHorizontalLocation, GL_FALSE);
-	QuadRenderer::GetInstance().DrawFullscreenQuad();
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 	this->postProcessing->Swap(false);
-	this->postProcessing->BindReadTexture();
+	this->postProcessing->BindFramebuffer();
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	this->blurShader->Apply();
+	for (int i = 0; i < count; i++)
+	{
+		glUniform1i(this->shaderHorizontalLocation, GL_TRUE);
+		QuadRenderer::GetInstance().DrawFullscreenQuad();
+		this->postProcessing->Swap();
+		glUniform1i(this->shaderHorizontalLocation, GL_FALSE);
+		QuadRenderer::GetInstance().DrawFullscreenQuad();
+		if (i == count - 1)
+		{
+			this->postProcessing->Swap(false);
+			this->postProcessing->BindReadTexture();
+		}
+		else
+		{
+			this->postProcessing->Swap();
+		}
+	}
 }
 
 void BlurRenderer::BindBlurredTexture(GLint index)

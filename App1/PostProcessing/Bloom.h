@@ -29,9 +29,7 @@ public:
 		// Pass 2: blur postProcessing FB 1 into blurRenderer FB 3 times
 		postProcessing->Swap(false);
 		postProcessing->BindReadTexture();
-		this->blurRenderer->BlurCurrentlyBoundTexture();
-		this->blurRenderer->BlurCurrentlyBoundTexture();
-		this->blurRenderer->BlurCurrentlyBoundTexture();
+		this->blurRenderer->BlurCurrentlyBoundTexture(3);
 		// Pass 3: apply bloom effect
 		// pass 2 didn't overwrite postProcessing FB 0, so we still have the completely unprocessed texture available in that buffer
 		postProcessing->Swap();

@@ -8,7 +8,7 @@ class BlurRenderer
 public:
 	BlurRenderer(GLsizei width, GLsizei height);
 	~BlurRenderer();
-	void BlurCurrentlyBoundTexture();
+	void BlurCurrentlyBoundTexture(int count = 1);
 	void BindBlurredTexture(GLint index = 0);
 private:
 	PostProcessing * postProcessing;
