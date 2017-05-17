@@ -9,6 +9,7 @@ BlurRenderer::BlurRenderer(GLsizei width, GLsizei height)
 	this->blurShader = new Shader("Shader\\passthrough.vs.glsl", "Shader\\gaussBlur.fs.glsl");
 	this->shaderHorizontalLocation = this->blurShader->GetUniformLocation("horizontal");
 	this->shaderTextureLocation = this->blurShader->GetUniformLocation("colorTexture");
+	this->shaderMipmapSamplesLocation = this->blurShader->GetUniformLocation("mipmapSamples");
 }
 
 BlurRenderer::~BlurRenderer()
@@ -17,21 +18,19 @@ BlurRenderer::~BlurRenderer()
 	delete this->blurShader;
 }
 
-void BlurRenderer::BlurCurrentlyBoundTexture(int count)
+void BlurRenderer::BlurCurrentlyBoundTexture(int count, int mipmapSamples)
 {
-	this->postProcessing->BindFramebuffer();
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
 	this->postProcessing->Swap(false);
 	this->postProcessing->BindFramebuffer();
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
 	this->blurShader->Apply();
+	glUniform1i(this->shaderMipmapSamplesLocation, mipmapSamples);
 	for (int i = 0; i < count; i++)
 	{
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glUniform1i(this->shaderHorizontalLocation, GL_TRUE);
 		QuadRenderer::GetInstance().DrawFullscreenQuad();
 		this->postProcessing->Swap();
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glUniform1i(this->shaderHorizontalLocation, GL_FALSE);
 		QuadRenderer::GetInstance().DrawFullscreenQuad();
 		if (i == count - 1)

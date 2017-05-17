@@ -2,6 +2,7 @@
 
 uniform sampler2D colorTexture;
 uniform bool horizontal;
+uniform int mipmapSamples;
 
 in vec2 texCoord;
 out vec4 outColor;
@@ -15,20 +16,26 @@ uniform float weights[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );
 void main()
 {
 	vec2 texelSize = 1.0 / textureSize(colorTexture, 0);
-	outColor = texture(colorTexture, texCoord) * weights[0];
-	for (int i = 1; i < 5; i++)
+	outColor = vec4(0.0);
+	for (int m = 0; m < mipmapSamples; m++)
 	{
-		vec2 offset = vec2(0.0);
-		if (horizontal)
+		outColor.rgb += textureLod(colorTexture, texCoord, m).rgb * weights[0];
+		for (int i = 1; i < 3; i++)
 		{
-			offset.x = offsets[i];
+			vec2 offset = vec2(0.0);
+			if (horizontal)
+			{
+				offset.x = offsets[i];
+			}
+			else
+			{
+				offset.y = offsets[i];
+			}
+			offset *= texelSize;
+			outColor.rgb += textureLod(colorTexture, texCoord + offset, m).rgb * weights[i];
+			outColor.rgb += textureLod(colorTexture, texCoord - offset, m).rgb * weights[i];
 		}
-		else
-		{
-			offset.y = offsets[i];
-		}
-		offset *= texelSize;
-		outColor += texture(colorTexture, texCoord + offset) * weights[i];
-		outColor += texture(colorTexture, texCoord - offset) * weights[i];
 	}
+	outColor.rgb /= vec3(mipmapSamples);
+	outColor.a = 1.0;
 }

@@ -13,6 +13,9 @@ void main()
 	if (brightness > 1.0)
 	{
 		outColor = color;
+		if (isnan(outColor.r) || isinf(outColor.r)) { outColor.r = 1.0; }
+		if (isnan(outColor.g) || isinf(outColor.g)) { outColor.g = 1.0; }
+		if (isnan(outColor.b) || isinf(outColor.b)) { outColor.b = 1.0; }
 	}
 	else
 	{

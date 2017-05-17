@@ -8,10 +8,10 @@ class BlurRenderer
 public:
 	BlurRenderer(GLsizei width, GLsizei height);
 	~BlurRenderer();
-	void BlurCurrentlyBoundTexture(int count = 1);
+	void BlurCurrentlyBoundTexture(int count = 1, int mipmapSamples = 1);
 	void BindBlurredTexture(GLint index = 0);
 private:
 	PostProcessing * postProcessing;
 	Shader * blurShader;
-	GLint shaderHorizontalLocation, shaderTextureLocation;
+	GLint shaderHorizontalLocation, shaderTextureLocation, shaderMipmapSamplesLocation;
 };
