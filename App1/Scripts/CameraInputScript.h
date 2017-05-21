@@ -52,7 +52,7 @@ namespace Scripts
 				this->position -= right * moveSpeed;
 			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 				this->position += up * moveSpeed;
-			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
 				this->position -= up * moveSpeed;
 
 			auto newTransform = glm::translate(glm::mat4(), this->position);
