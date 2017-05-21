@@ -14,6 +14,8 @@ RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight)
 	this->renderer = new DeferredRenderer(windowWidth, windowHeight);
 	this->postProcessing = new PostProcessing(windowWidth, windowHeight);
 	this->gammaPost = new GammaPostProcessing();
+	this->hdrPost = new HdrPostProcessing();
+	this->bloomPost = new BloomPostProcessing(windowWidth, windowHeight);
 	this->lightShaderAmbient = new Shader("Shader\\passthrough.vs.glsl", "Shader\\ambientLight.fs.glsl");
 	this->lightShaderPoint = new Shader("Shader\\passthrough.vs.glsl", "Shader\\pointLight.fs.glsl");
 	this->lightShaderDirectional = new Shader("Shader\\passthrough.vs.glsl", "Shader\\directionalLight.fs.glsl");
@@ -25,6 +27,8 @@ RenderSystem::~RenderSystem()
 	delete this->renderer;
 	delete this->postProcessing;
 	delete this->gammaPost;
+	delete this->hdrPost;
+	delete this->bloomPost;
 	delete this->lightShaderAmbient;
 	delete this->lightShaderPoint;
 	delete this->lightShaderDirectional;
@@ -132,6 +136,9 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	this->postProcessing->BindFramebuffer();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	this->postProcessing->Swap();
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 	this->renderer->StartLightPass();
 
 	auto quadRenderer = QuadRenderer::GetInstance();
@@ -192,7 +199,10 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	}
 
 	this->renderer->EndLightPass();
-	this->postProcessing->BindFramebuffer();
+	this->bloomPost->Draw(this->postProcessing);
+	this->hdrPost->Draw(this->postProcessing);
+	this->postProcessing->Swap(false);
+	this->postProcessing->BindReadTexture();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	this->gammaPost->Draw();
 }

@@ -1,4 +1,4 @@
-uniform sampler2D shadowMapTexture;
+uniform sampler2DShadow shadowMapTexture;
 uniform mat4 lightViewProj;
 uniform bool enableShadowMap;
 
@@ -16,11 +16,10 @@ float GetShadowMapValue(Fragment fragment, vec3 lightDir)
 		{
 			for (float y = -1.5; y <= 1.5; y++)
 			{
-				float lightDepth = texture2D(shadowMapTexture, lightFragment.xy + vec2(x, y) * texelSize).r;
-				shadow += (lightDepth < lightFragment.z - bias) ? 1.0 : 0.0;
+				shadow += texture(shadowMapTexture, vec3(lightFragment.xy + vec2(x, y) * texelSize, lightFragment.z - bias)); 
 			}
 		}
 		shadow /= 16.0;
 	}
-	return 1.0 - shadow;
+	return shadow;
 }
