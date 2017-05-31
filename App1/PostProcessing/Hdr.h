@@ -15,7 +15,7 @@ public:
 		this->data = (float*)malloc(sizeof(float) * 4);
 	}
 	~HdrPostProcessing() { free(this->data); }
-	void Draw(PostProcessing * postProcessing)
+	void Draw(PostProcessing * postProcessing, float frameTime)
 	{
 		postProcessing->Swap();
 		this->shader->Apply();
@@ -34,7 +34,7 @@ public:
 			brightness = targetBrightness;
 		}
 		float targetExposure = this->exposure - brightness + targetBrightness;
-		this->exposure = glm::clamp(glm::mix(this->exposure, targetExposure, .03f), .2f, .8f);
+		this->exposure = glm::clamp(glm::mix(this->exposure, targetExposure, .03f * frameTime * 60.f), .2f, .8f);
 		postProcessing->Swap(false);
 	}
 private:
