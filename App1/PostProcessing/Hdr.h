@@ -34,7 +34,7 @@ public:
 			brightness = targetBrightness;
 		}
 		float targetExposure = this->exposure - brightness + targetBrightness;
-		this->exposure = glm::clamp(this->exposure * .945f + targetExposure * .055f, .2f, .8f);
+		this->exposure = glm::clamp(glm::mix(this->exposure, targetExposure, .03f), .2f, .8f);
 		postProcessing->Swap(false);
 	}
 private:
