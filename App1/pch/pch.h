@@ -6,6 +6,9 @@
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "soil.lib")
 #pragma comment(lib, "assimp.lib")
+#pragma comment(lib, "BulletCollision.lib")
+#pragma comment(lib, "BulletDynamics.lib")
+#pragma comment(lib, "LinearMath.lib")
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -26,3 +29,4 @@
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
+#include <bulletphysics\btBulletDynamicsCommon.h>
