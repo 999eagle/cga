@@ -5,11 +5,13 @@
 
 BlurRenderer::BlurRenderer(GLsizei width, GLsizei height)
 {
+	this->width = width;
+	this->height = height;
 	this->postProcessing = new PostProcessing(width, height);
 	this->blurShader = new Shader("Shader\\passthrough.vs.glsl", "Shader\\gaussBlur.fs.glsl");
 	this->shaderHorizontalLocation = this->blurShader->GetUniformLocation("horizontal");
 	this->shaderTextureLocation = this->blurShader->GetUniformLocation("colorTexture");
-	this->shaderMipmapSamplesLocation = this->blurShader->GetUniformLocation("mipmapSamples");
+	this->shaderViewportSizeLocation = this->blurShader->GetUniformLocation("viewportSize");
 }
 
 BlurRenderer::~BlurRenderer()
@@ -18,12 +20,13 @@ BlurRenderer::~BlurRenderer()
 	delete this->blurShader;
 }
 
-void BlurRenderer::BlurCurrentlyBoundTexture(int count, int mipmapSamples)
+void BlurRenderer::BlurCurrentlyBoundTexture(int count)
 {
 	this->postProcessing->Swap(false);
 	this->postProcessing->BindFramebuffer();
 	this->blurShader->Apply();
-	glUniform1i(this->shaderMipmapSamplesLocation, mipmapSamples);
+	glViewport(0, 0, this->width, this->height);
+	glUniform2f(this->shaderViewportSizeLocation, width, height);
 	for (int i = 0; i < count; i++)
 	{
 		glGenerateMipmap(GL_TEXTURE_2D);
