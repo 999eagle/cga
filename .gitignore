@@ -253,3 +253,4 @@ paket-files/
 
 # Include .obj models
 !**/Content/**/*.obj
+!Libs/lib/x64/

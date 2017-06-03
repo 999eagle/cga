@@ -8,6 +8,7 @@
 #include "ECS\Components\ModelComponents.h"
 #include "ECS\Components\CameraComponent.h"
 #include "ECS\Systems\ScriptSystem.h"
+#include "ECS\Systems\PhysicsSystem.h"
 
 #include "Scripts\CameraInputScript.h"
 #include "Common\util.h"
@@ -62,6 +63,7 @@ bool App::Initialize(int width, int height, const char* title)
 	this->world = std::make_unique<ECS::World>();
 	this->world->AddSystem<ECS::Systems::ScriptSystem>(this->window);
 	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height);
+	this->world->AddSystem<ECS::Systems::PhysicsSystem>();
 
 	App::currentApp = this;
 	return true;

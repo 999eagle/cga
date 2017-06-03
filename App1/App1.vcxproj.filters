@@ -61,6 +61,9 @@
     <ClCompile Include="PostProcessing\BlurRenderer.cpp">
       <Filter>PostProcessing</Filter>
     </ClCompile>
+    <ClCompile Include="ECS\Systems\PhysicsSystem.cpp">
+      <Filter>ECS\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -129,6 +132,9 @@
     </ClInclude>
     <ClInclude Include="PostProcessing\BlurRenderer.h">
       <Filter>PostProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Systems\PhysicsSystem.h">
+      <Filter>ECS\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
