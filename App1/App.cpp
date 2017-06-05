@@ -9,6 +9,8 @@
 #include "ECS\Components\CameraComponent.h"
 #include "ECS\Systems\ScriptSystem.h"
 #include "ECS\Systems\PhysicsSystem.h"
+#include "ECS\Components\RigidBodyComponent.h"
+#include "CollisionShapes.h"
 
 #include "Scripts\CameraInputScript.h"
 #include "Common\util.h"
@@ -124,12 +126,25 @@ void App::LoadContent()
 	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\ground.obj");
 	e = (*e->GetComponent<ECS::Components::TransformComponent>()->GetChildren().begin())->GetEntity();
 	e->GetComponent<ECS::Components::MaterialComponent>()->material = MaterialImporter::GetInstance().LoadMaterial("Content\\Material\\rustediron2\\material.mat");
+	auto offset = btTransform::getIdentity();
+	offset.setOrigin(btVector3(.0f, .005f, .1f));
+	e->AddComponent<ECS::Components::RigidBodyComponent>(std::shared_ptr<CollisionShape>(new BoxCollisionShape(1.f, 0.01f, 1.f)), offset);
 
 	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\girl\\Beautiful Girl.3ds");
 	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
 	auto t = transformComponent->GetLocalTransform();
-	t = glm::scale(glm::mat4(), glm::vec3(.03f, .03f, .03f)) * t;
+	t = glm::scale(glm::mat4(), glm::vec3(.05f, .05f, .05f)) * t;
 	transformComponent->SetLocalTransform(t);
+	offset = btTransform::getIdentity();
+	offset.setOrigin(btVector3(.0f, -1.f, .0f));
+	e->AddComponent<ECS::Components::RigidBodyComponent>(std::shared_ptr<CollisionShape>(new CapsuleCollisionShape(.15f, 2.f)), offset, 1.f);
+
+	e = ModelImporter::GetInstance().LoadModel(this->world.get(), "Content\\Model\\cube\\cube.obj");
+	transformComponent = e->GetComponent<ECS::Components::TransformComponent>();
+	transformComponent->SetLocalTransform(glm::translate(glm::vec3(0.f, 5.f, 0.f)));
+	offset = btTransform::getIdentity();
+	offset.setOrigin(btVector3(.0f, .25f, .0f));
+	e->AddComponent<ECS::Components::RigidBodyComponent>(std::shared_ptr<CollisionShape>(new BoxCollisionShape(.5f, .5f, .5f)), offset, 1.f, false);
 }
 
 void App::UnloadContent()
