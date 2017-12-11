@@ -7,6 +7,16 @@
 #pragma comment(lib, "soil.lib")
 #pragma comment(lib, "assimp.lib")
 
+#ifndef _DEBUG
+#pragma comment(lib, "BulletCollision.lib")
+#pragma comment(lib, "BulletDynamics.lib")
+#pragma comment(lib, "LinearMath.lib")
+#else
+#pragma comment(lib, "BulletCollision_Debug.lib")
+#pragma comment(lib, "BulletDynamics_Debug.lib")
+#pragma comment(lib, "LinearMath_Debug.lib")
+#endif
+
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <glm\glm.hpp>
@@ -26,3 +36,4 @@
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
+#include <bulletphysics\btBulletDynamicsCommon.h>

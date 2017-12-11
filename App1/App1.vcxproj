@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>pch\;..\Libs\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Libs\lib\Win32;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\Libs\lib\Win32\Debug;..\Libs\lib\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>pch\;..\Libs\include;$(IncludePath)</IncludePath>
@@ -79,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>pch\;..\Libs\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Libs\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\Libs\lib\x64\Debug;..\Libs\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>pch\;..\Libs\include;$(IncludePath)</IncludePath>
@@ -163,6 +163,7 @@
     <ClCompile Include="ECS\Component.cpp" />
     <ClCompile Include="ECS\Entity.cpp" />
     <ClCompile Include="ECS\System.cpp" />
+    <ClCompile Include="ECS\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="ECS\Systems\RenderSystem.cpp" />
     <ClCompile Include="ECS\Systems\ScriptSystem.cpp" />
     <ClCompile Include="ECS\World.cpp" />
@@ -183,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="AppTime.h" />
+    <ClInclude Include="CollisionShapes.h" />
     <ClInclude Include="Common\ShaderStructures.h" />
     <ClInclude Include="Common\util.h" />
     <ClInclude Include="DeferredRenderer.h" />
@@ -190,10 +192,12 @@
     <ClInclude Include="ECS\Components\CameraComponent.h" />
     <ClInclude Include="ECS\Components\LightComponent.h" />
     <ClInclude Include="ECS\Components\ModelComponents.h" />
+    <ClInclude Include="ECS\Components\RigidBodyComponent.h" />
     <ClInclude Include="ECS\Components\ScriptComponent.h" />
     <ClInclude Include="ECS\Components\TransformComponent.h" />
     <ClInclude Include="ECS\Entity.h" />
     <ClInclude Include="ECS\System.h" />
+    <ClInclude Include="ECS\Systems\PhysicsSystem.h" />
     <ClInclude Include="ECS\Systems\RenderSystem.h" />
     <ClInclude Include="ECS\Systems\ScriptSystem.h" />
     <ClInclude Include="ECS\World.h" />

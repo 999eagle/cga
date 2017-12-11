@@ -253,3 +253,6 @@ paket-files/
 
 # Include .obj models
 !**/Content/**/*.obj
+!Libs/lib/x64/
+!Libs/lib/Win32/Debug/
+!Libs/lib/x64/Debug/
