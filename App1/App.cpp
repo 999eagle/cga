@@ -28,6 +28,11 @@ App::~App()
 		glfwDestroyWindow(this->window);
 		this->window = NULL;
 	}
+	if (this->vr != NULL)
+	{
+		vr::VR_Shutdown();
+		this->vr = NULL;
+	}
 	if (this->glfwInitialized)
 	{
 		glfwTerminate();
@@ -36,13 +41,23 @@ App::~App()
 	App::currentApp = NULL;
 }
 
-bool App::Initialize(int width, int height, const char* title)
+bool App::Initialize(int width, int height, const char* title, bool useVr)
 {
 	if (App::currentApp != NULL)
 		return false;
 	if (!glfwInit())
 		return false;
 	this->glfwInitialized = true;
+	if (useVr)
+	{
+		vr::EVRInitError error = vr::EVRInitError::VRInitError_None;
+		this->vr = vr::VR_Init(&error, vr::EVRApplicationType::VRApplication_Scene);
+		if (error != vr::VRInitError_None)
+		{
+			this->vr = NULL;
+			return false;
+		}
+	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -64,7 +79,7 @@ bool App::Initialize(int width, int height, const char* title)
 
 	this->world = std::make_unique<ECS::World>();
 	this->world->AddSystem<ECS::Systems::ScriptSystem>(this->window);
-	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height);
+	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height, this->vr);
 	this->world->AddSystem<ECS::Systems::PhysicsSystem>();
 
 	App::currentApp = this;

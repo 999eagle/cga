@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RenderSystem.h"
 
+#include "..\..\Common\util.h"
 #include "..\Components\ModelComponents.h"
 #include "..\Components\TransformComponent.h"
 #include "..\Components\LightComponent.h"
@@ -8,14 +9,28 @@
 
 using namespace ECS::Systems;
 
-RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight)
-	: windowWidth(windowWidth), windowHeight(windowHeight)
+RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight, vr::IVRSystem * vr)
+	: windowWidth(windowWidth), windowHeight(windowHeight), vr(vr)
 {
-	this->renderer = new DeferredRenderer(windowWidth, windowHeight);
-	this->postProcessing = new PostProcessing(windowWidth, windowHeight);
+	if (this->vr != NULL)
+	{
+		uint32_t width, height;
+		this->vr->GetRecommendedRenderTargetSize(&width, &height);
+		this->windowWidth = width;
+		this->windowHeight = height;
+		this->rightRenderer = new DeferredRenderer(this->windowWidth, this->windowHeight);
+
+		glm::mat4 eye;
+		vrMatrixToGlm(eye, this->vr->GetEyeToHeadTransform(vr::Eye_Left));
+		this->eyePoseLeft = glm::inverse(eye);
+		vrMatrixToGlm(eye, this->vr->GetEyeToHeadTransform(vr::Eye_Right));
+		this->eyePoseRight = glm::inverse(eye);
+	}
+	this->leftRenderer = new DeferredRenderer(this->windowWidth, this->windowHeight);
+	this->postProcessing = new PostProcessing(this->windowWidth, this->windowHeight);
 	this->gammaPost = new GammaPostProcessing();
 	this->hdrPost = new HdrPostProcessing();
-	this->bloomPost = new BloomPostProcessing(windowWidth, windowHeight);
+	this->bloomPost = new BloomPostProcessing(this->windowWidth, this->windowHeight);
 	this->lightShaderAmbient = new Shader("Shader\\passthrough.vs.glsl", "Shader\\ambientLight.fs.glsl");
 	this->lightShaderPoint = new Shader("Shader\\passthrough.vs.glsl", "Shader\\pointLight.fs.glsl");
 	this->lightShaderDirectional = new Shader("Shader\\passthrough.vs.glsl", "Shader\\directionalLight.fs.glsl");
@@ -24,7 +39,11 @@ RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight)
 
 RenderSystem::~RenderSystem()
 {
-	delete this->renderer;
+	delete this->leftRenderer;
+	if (this->vr != NULL)
+	{
+		delete this->rightRenderer;
+	}
 	delete this->postProcessing;
 	delete this->gammaPost;
 	delete this->hdrPost;
@@ -53,18 +72,33 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	}
 	if (camera == NULL) return;
 
+	this->UpdateVRTracking();
+
+
 	auto cameraTransform = camera->GetEntity()->GetComponent<ECS::Components::TransformComponent>()->GetWorldTransform();
+	glm::mat4 projLeft, projRight;
 	glm::mat4 view, proj, viewProj, invViewProj;
 	glm::vec3 camPos;
-	proj = glm::perspective(camera->GetFOV(), camera->GetAspectRatio(), camera->GetNearPlane(), camera->GetFarPlane());
 	view = glm::inverse(cameraTransform);
+	if (this->vr != NULL)
+	{
+		vrMatrixToGlm(projLeft, this->vr->GetProjectionMatrix(vr::Eye_Left, camera->GetNearPlane(), camera->GetFarPlane()));
+		vrMatrixToGlm(projRight, this->vr->GetProjectionMatrix(vr::Eye_Right, camera->GetNearPlane(), camera->GetFarPlane()));
+		proj = projLeft;
+		view = this->eyePoseLeft * this->hmdPose * view;
+		camPos = glm::inverse(view) * glm::vec4(0, 0, 0, 1);
+	}
+	else
+	{
+		proj = glm::perspective(camera->GetFOV(), camera->GetAspectRatio(), camera->GetNearPlane(), camera->GetFarPlane());
+		camPos = cameraTransform * glm::vec4(0, 0, 0, 1);
+	}
 	viewProj = proj * view;
 	invViewProj = glm::inverse(viewProj);
-	camPos = cameraTransform * glm::vec4(0, 0, 0, 1);
 
-	GLint worldMatrixLocation = this->renderer->GetWorldMatrixLocation();
-	this->renderer->StartGeometryPass(viewProj);
-	auto geometryShader = this->renderer->GetGeometryShader();
+	GLint worldMatrixLocation = this->leftRenderer->GetWorldMatrixLocation();
+	this->leftRenderer->StartGeometryPass(viewProj);
+	auto geometryShader = this->leftRenderer->GetGeometryShader();
 
 	std::vector<ECS::Components::LightComponent*> ambientLights;
 	std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> pointLights;
@@ -106,7 +140,7 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 		}
 	}
 
-	this->renderer->EndGeometryPass();
+	this->leftRenderer->EndGeometryPass();
 
 	if (!shadowMapLights.empty())
 	{
@@ -139,7 +173,7 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	this->postProcessing->Swap();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	this->renderer->StartLightPass();
+	this->leftRenderer->StartLightPass();
 
 	auto quadRenderer = QuadRenderer::GetInstance();
 	if (!ambientLights.empty())
@@ -198,13 +232,31 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 		}
 	}
 
-	this->renderer->EndLightPass();
+	this->leftRenderer->EndLightPass();
 	this->bloomPost->Draw(this->postProcessing);
 	this->hdrPost->Draw(this->postProcessing, (float)time.GetElapsedSeconds());
 	this->postProcessing->Swap(false);
 	this->postProcessing->BindReadTexture();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	this->gammaPost->Draw();
+}
+
+void ECS::Systems::RenderSystem::UpdateVRTracking()
+{
+	if (this->vr == NULL) return;
+
+	vr::VRCompositor()->WaitGetPoses(this->trackedDevicePoses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
+	for (int i = 0; i < vr::k_unMaxTrackedDeviceCount; i++)
+	{
+		if (this->trackedDevicePoses[i].bPoseIsValid)
+		{
+			vrMatrixToGlm(this->trackedDeviceMatrices[i], this->trackedDevicePoses[i].mDeviceToAbsoluteTracking);
+		}
+	}
+	if (this->trackedDevicePoses[vr::k_unTrackedDeviceIndex_Hmd].bPoseIsValid)
+	{
+		this->hmdPose = glm::inverse(this->trackedDeviceMatrices[vr::k_unTrackedDeviceIndex_Hmd]);
+	}
 }
 
 void ECS::Systems::RenderSystem::ApplyLightShader(Shader * shader, const glm::vec3 & cameraPosition, const glm::mat4 & invViewProj)
