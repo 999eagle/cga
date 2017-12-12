@@ -6,6 +6,11 @@
 #include "..\..\PostProcessing\PostProcessing.h"
 #include "..\..\Common\ShaderStructures.h"
 
+#include "..\Components\ModelComponents.h"
+#include "..\Components\TransformComponent.h"
+#include "..\Components\LightComponent.h"
+#include "..\Components\CameraComponent.h"
+
 #include "..\..\PostProcessing\GammaPostProcessing.h"
 #include "..\..\PostProcessing\Hdr.h"
 #include "..\..\PostProcessing\Bloom.h"
@@ -24,12 +29,21 @@ namespace ECS { namespace Systems
 		void FixedUpdate(World & world, const AppTime & time) { }
 		void ApplyLightShader(Shader * shader, const glm::vec3 & cameraPosition, const glm::mat4 & invViewProj);
 	private:
-		void UpdateVRTracking();
+		void RenderWithCamera(const AppTime & time, ECS::Components::CameraComponent * camera, GLuint targetFB,
+			std::vector<std::tuple<ECS::Components::MeshComponent<VertexType>*, ECS::Components::MaterialComponent*, glm::mat4>> meshes,
+			std::vector<ECS::Components::LightComponent*> ambientLights,
+			std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> pointLights,
+			std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> directionalLights,
+			std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> shadowMapLights);
+		void EnsureFramebuffers(size_t requiredNum);
+		void CreateFramebuffer(size_t index);
 
 		vr::IVRSystem * vr;
-		GLsizei windowWidth, windowHeight;
-		DeferredRenderer * leftRenderer;
-		DeferredRenderer * rightRenderer;
+
+		GLsizei windowWidth, windowHeight, renderWidth, renderHeight;
+		GLuint * frameBufferIds, * textureIds;
+		size_t numFrameBuffers;
+		DeferredRenderer * renderer;
 		PostProcessing * postProcessing;
 		GammaPostProcessing * gammaPost;
 		HdrPostProcessing * hdrPost;
@@ -38,13 +52,5 @@ namespace ECS { namespace Systems
 		Shader * lightShaderDirectional;
 		Shader * lightShaderPoint;
 		Shader * shadowMapShader;
-
-		vr::TrackedDevicePose_t trackedDevicePoses[vr::k_unMaxTrackedDeviceCount];
-		glm::mat4 trackedDeviceMatrices[vr::k_unMaxTrackedDeviceCount];
-		glm::mat4 hmdPose;
-		glm::mat4 eyePoseLeft;
-		glm::mat4 eyePoseRight;
-		glm::mat4 projLeft;
-		glm::mat4 projRight;
 	};
 }}

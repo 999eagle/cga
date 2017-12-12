@@ -64,6 +64,9 @@
     <ClCompile Include="ECS\Systems\PhysicsSystem.cpp">
       <Filter>ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="ECS\Systems\InputSystem.cpp">
+      <Filter>ECS\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -140,6 +143,12 @@
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="CollisionShapes.h" />
+    <ClInclude Include="ECS\Systems\InputSystem.h">
+      <Filter>ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\VRTrackedDeviceComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\simple.vs.glsl">
@@ -188,6 +197,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\postBloomRender.fs.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\simpleTexture.fs.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

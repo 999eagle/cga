@@ -1,21 +1,20 @@
 #pragma once
 
 #include "..\Component.h"
-#include "TransformComponent.h"
 
 namespace ECS { namespace Components {
 	class CameraComponent : public Component
 	{
 	public:
-		CameraComponent(float fov, float aspectRatio, float nearPlane, float farPlane)
-			: fov(fov), aspectRatio(aspectRatio), nearPlane(nearPlane), farPlane(farPlane)
+		CameraComponent(float fov, float aspect, float nearPlane, float farPlane)
+			: proj(glm::perspective(fov, aspect, nearPlane, farPlane))
+		{ }
+		CameraComponent(glm::mat4 proj)
+			: proj(proj)
 		{ }
 
-		const float & GetFOV() { return this->fov; }
-		const float & GetAspectRatio() { return this->aspectRatio; }
-		const float & GetNearPlane() { return this->nearPlane; }
-		const float & GetFarPlane() { return this->farPlane; }
+		const glm::mat4 & GetProj() { return this->proj; }
 	private:
-		float fov, aspectRatio, nearPlane, farPlane;
+		glm::mat4 proj;
 	};
 }}

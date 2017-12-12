@@ -163,6 +163,7 @@
     <ClCompile Include="ECS\Component.cpp" />
     <ClCompile Include="ECS\Entity.cpp" />
     <ClCompile Include="ECS\System.cpp" />
+    <ClCompile Include="ECS\Systems\InputSystem.cpp" />
     <ClCompile Include="ECS\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="ECS\Systems\RenderSystem.cpp" />
     <ClCompile Include="ECS\Systems\ScriptSystem.cpp" />
@@ -195,8 +196,10 @@
     <ClInclude Include="ECS\Components\RigidBodyComponent.h" />
     <ClInclude Include="ECS\Components\ScriptComponent.h" />
     <ClInclude Include="ECS\Components\TransformComponent.h" />
+    <ClInclude Include="ECS\Components\VRTrackedDeviceComponent.h" />
     <ClInclude Include="ECS\Entity.h" />
     <ClInclude Include="ECS\System.h" />
+    <ClInclude Include="ECS\Systems\InputSystem.h" />
     <ClInclude Include="ECS\Systems\PhysicsSystem.h" />
     <ClInclude Include="ECS\Systems\RenderSystem.h" />
     <ClInclude Include="ECS\Systems\ScriptSystem.h" />
@@ -230,6 +233,7 @@
     <None Include="Shader\postGamma.fs.glsl" />
     <None Include="Shader\shadowMap.inc.glsl" />
     <None Include="Shader\simple.vs.glsl" />
+    <None Include="Shader\simpleTexture.fs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
