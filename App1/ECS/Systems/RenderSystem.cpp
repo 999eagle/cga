@@ -131,19 +131,16 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->frameBufferIds[0]);
 		glBlitFramebuffer(0, 0, this->renderWidth, this->renderHeight, 0, 0, this->windowWidth, this->windowHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-		if (leftEyeTex != -1)
+		if (leftEyeTex != -1 && rightEyeTex != -1)
 		{
-			vr::Texture_t tex = { (void*)(uintptr_t)(this->textureIds[leftEyeTex]), vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
-			vr::EVRCompositorError err = vr::VRCompositor()->Submit(vr::Eye_Left, &tex);
+			vr::Texture_t left = { (void*)(uintptr_t)(this->textureIds[leftEyeTex]), vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+			vr::Texture_t right = { (void*)(uintptr_t)(this->textureIds[rightEyeTex]), vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+			vr::EVRCompositorError err = vr::VRCompositor()->Submit(vr::Eye_Left, &left);
 			if (err != vr::VRCompositorError_None)
 			{
 				std::cerr << "Error submitting left eye" << std::endl;
 			}
-		}
-		if (rightEyeTex != -1)
-		{
-			vr::Texture_t tex = { (void*)(uintptr_t)(this->textureIds[leftEyeTex]), vr::TextureType_OpenGL, vr::ColorSpace_Auto };
-			vr::EVRCompositorError err = vr::VRCompositor()->Submit(vr::Eye_Right, &tex);
+			err = vr::VRCompositor()->Submit(vr::Eye_Right, &right);
 			if (err != vr::VRCompositorError_None)
 			{
 				std::cerr << "Error submitting right eye" << std::endl;
