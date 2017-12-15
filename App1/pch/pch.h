@@ -6,6 +6,7 @@
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "soil.lib")
 #pragma comment(lib, "assimp.lib")
+#pragma comment(lib, "openvr_api.lib")
 
 #ifndef _DEBUG
 #pragma comment(lib, "BulletCollision.lib")
@@ -37,3 +38,4 @@
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
 #include <bulletphysics\btBulletDynamicsCommon.h>
+#include <openvr\openvr.h>

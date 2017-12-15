@@ -7,8 +7,10 @@
 #include "ECS\Components\TransformComponent.h"
 #include "ECS\Components\ModelComponents.h"
 #include "ECS\Components\CameraComponent.h"
+#include "ECS\Components\VRTrackedDeviceComponent.h"
 #include "ECS\Systems\ScriptSystem.h"
 #include "ECS\Systems\PhysicsSystem.h"
+#include "ECS\Systems\InputSystem.h"
 #include "ECS\Components\RigidBodyComponent.h"
 #include "CollisionShapes.h"
 
@@ -28,6 +30,11 @@ App::~App()
 		glfwDestroyWindow(this->window);
 		this->window = NULL;
 	}
+	if (this->vr != NULL)
+	{
+		vr::VR_Shutdown();
+		this->vr = NULL;
+	}
 	if (this->glfwInitialized)
 	{
 		glfwTerminate();
@@ -36,13 +43,24 @@ App::~App()
 	App::currentApp = NULL;
 }
 
-bool App::Initialize(int width, int height, const char* title)
+bool App::Initialize(int width, int height, const char* title, bool useVr)
 {
 	if (App::currentApp != NULL)
 		return false;
 	if (!glfwInit())
 		return false;
 	this->glfwInitialized = true;
+	this->vr = NULL;
+	if (useVr)
+	{
+		vr::EVRInitError error = vr::EVRInitError::VRInitError_None;
+		this->vr = vr::VR_Init(&error, vr::EVRApplicationType::VRApplication_Scene);
+		if (error != vr::VRInitError_None)
+		{
+			this->vr = NULL;
+			return false;
+		}
+	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -64,7 +82,8 @@ bool App::Initialize(int width, int height, const char* title)
 
 	this->world = std::make_unique<ECS::World>();
 	this->world->AddSystem<ECS::Systems::ScriptSystem>(this->window);
-	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height);
+	this->world->AddSystem<ECS::Systems::InputSystem>(this->vr);
+	this->world->AddSystem<ECS::Systems::RenderSystem>(width, height, this->vr);
 	this->world->AddSystem<ECS::Systems::PhysicsSystem>();
 
 	App::currentApp = this;
@@ -78,9 +97,36 @@ void App::LoadContent()
 	glfwGetWindowSize(this->window, &width, &height);
 
 	auto e = new ECS::Entity();
-	e->AddComponent<ECS::Components::CameraComponent>(45.0f, (float)width / (float)height, 0.1f, 5.0f);
-	e->GetComponent<ECS::Components::TransformComponent>()->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
 	e->AddComponent<ECS::Components::ScriptComponent>();
+	auto camRootTransform = e->GetComponent<ECS::Components::TransformComponent>();
+	camRootTransform->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
+	if (this->vr != NULL)
+	{
+		auto hmdEntity = new ECS::Entity();
+		hmdEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_Hmd);
+		auto hmdTransform = hmdEntity->GetComponent<ECS::Components::TransformComponent>();
+		hmdTransform->SetParent(camRootTransform);
+
+		glm::mat4 proj;
+		auto leftEyeEntity = new ECS::Entity();
+		leftEyeEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_EyeLeft);
+		leftEyeEntity->GetComponent<ECS::Components::TransformComponent>()->SetParent(hmdTransform);
+		vrMatrixToGlm(proj, this->vr->GetProjectionMatrix(vr::Eye_Left, 0.1f, 5.0f));
+		leftEyeEntity->AddComponent<ECS::Components::CameraComponent>(proj);
+		auto rightEyeEntity = new ECS::Entity();
+		rightEyeEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_EyeRight);
+		rightEyeEntity->GetComponent<ECS::Components::TransformComponent>()->SetParent(hmdTransform);
+		vrMatrixToGlm(proj, this->vr->GetProjectionMatrix(vr::Eye_Right, 0.1f, 5.0f));
+		rightEyeEntity->AddComponent<ECS::Components::CameraComponent>(proj);
+
+		this->world->AddEntity(hmdEntity);
+		this->world->AddEntity(leftEyeEntity);
+		this->world->AddEntity(rightEyeEntity);
+	}
+	else
+	{
+		e->AddComponent<ECS::Components::CameraComponent>(45.0f, (float)width / (float)height, 0.1f, 5.0f);
+	}
 	e->GetComponent<ECS::Components::ScriptComponent>()->AddScript<Scripts::CameraInputScript>(this->window);
 	this->world->AddEntity(e);
 
@@ -169,7 +215,6 @@ void App::GameLoop()
 
 	while (!glfwWindowShouldClose(this->window))
 	{
-		glfwPollEvents();
 		currentTicks = glfwGetTimerValue();
 		tickDelta = currentTicks - lastTicks;
 		lastTicks = currentTicks;

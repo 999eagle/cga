@@ -58,3 +58,23 @@ glm::tquat<T, P> rotateForwardTo(const glm::tvec3<T, P> & v)
 {
 	return rotateForwardToNormalized(glm::normalize(v));
 }
+
+template<typename T, glm::precision P>
+void vrMatrixToGlm(glm::tmat4x4<T, P> & glmMat, const vr::HmdMatrix44_t & vrMat)
+{
+	glmMat = glm::tmat4x4<T, P>(
+		vrMat.m[0][0], vrMat.m[1][0], vrMat.m[2][0], vrMat.m[3][0],
+		vrMat.m[0][1], vrMat.m[1][1], vrMat.m[2][1], vrMat.m[3][1],
+		vrMat.m[0][2], vrMat.m[1][2], vrMat.m[2][2], vrMat.m[3][2],
+		vrMat.m[0][3], vrMat.m[1][3], vrMat.m[2][3], vrMat.m[3][3] );
+}
+
+template<typename T, glm::precision P>
+void vrMatrixToGlm(glm::tmat4x4<T, P> & glmMat, const vr::HmdMatrix34_t & vrMat)
+{
+	glmMat = glm::tmat4x4<T, P>(
+		vrMat.m[0][0], vrMat.m[1][0], vrMat.m[2][0], (T)0.0,
+		vrMat.m[0][1], vrMat.m[1][1], vrMat.m[2][1], (T)0.0,
+		vrMat.m[0][2], vrMat.m[1][2], vrMat.m[2][2], (T)0.0,
+		vrMat.m[0][3], vrMat.m[1][3], vrMat.m[2][3], (T)1.0);
+}

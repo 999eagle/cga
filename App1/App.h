@@ -8,7 +8,7 @@ class App
 public:
 	App();
 	~App();
-	bool Initialize(int width, int height, const char* title);
+	bool Initialize(int width, int height, const char* title, bool useVr);
 	void GameLoop();
 	void LoadContent();
 	void UnloadContent();
@@ -21,6 +21,8 @@ private:
 
 	GLFWwindow* window;
 	bool glfwInitialized = false;
+
+	vr::IVRSystem* vr;
 
 	std::unique_ptr<ECS::World> world;
 };
