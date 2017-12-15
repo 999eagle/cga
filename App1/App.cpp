@@ -99,7 +99,6 @@ void App::LoadContent()
 	auto e = new ECS::Entity();
 	e->AddComponent<ECS::Components::ScriptComponent>();
 	auto camRootTransform = e->GetComponent<ECS::Components::TransformComponent>();
-	camRootTransform->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
 	if (this->vr != NULL)
 	{
 		auto hmdEntity = new ECS::Entity();
@@ -125,6 +124,7 @@ void App::LoadContent()
 	}
 	else
 	{
+		camRootTransform->SetLocalTransform(glm::translate(glm::mat4(), glm::vec3(0.f, 1.f, 3.f)));
 		e->AddComponent<ECS::Components::CameraComponent>(45.0f, (float)width / (float)height, 0.1f, 5.0f);
 	}
 	e->GetComponent<ECS::Components::ScriptComponent>()->AddScript<Scripts::CameraInputScript>(this->window);
