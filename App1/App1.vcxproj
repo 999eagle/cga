@@ -233,7 +233,6 @@
     <None Include="Shader\postGamma.fs.glsl" />
     <None Include="Shader\shadowMap.inc.glsl" />
     <None Include="Shader\simple.vs.glsl" />
-    <None Include="Shader\simpleTexture.fs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

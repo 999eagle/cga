@@ -15,8 +15,6 @@ RenderSystem::RenderSystem(GLsizei windowWidth, GLsizei windowHeight, vr::IVRSys
 		this->renderWidth = width;
 		this->renderHeight = height;
 	}
-	this->renderHeight = 1680;
-	this->renderWidth = 1520;
 	this->frameBufferIds = NULL;
 	this->textureIds = NULL;
 	this->numFrameBuffers = 0;
@@ -165,7 +163,6 @@ void RenderSystem::RenderWithCamera(const AppTime & time, ECS::Components::Camer
 	std::vector<std::pair<ECS::Components::LightComponent*, glm::mat4>> shadowMapLights)
 {
 	auto cameraTransform = camera->GetEntity()->GetComponent<ECS::Components::TransformComponent>()->GetWorldTransform();
-	glm::mat4 projLeft, projRight;
 	glm::mat4 view, proj, viewProj, invViewProj;
 	glm::vec3 camPos;
 	view = glm::inverse(cameraTransform);
