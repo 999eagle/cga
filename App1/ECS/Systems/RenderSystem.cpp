@@ -306,12 +306,11 @@ void RenderSystem::EnsureFramebuffers(size_t requiredNum)
 	if (requiredNum <= this->numFrameBuffers) { return; }
 	this->frameBufferIds = (GLuint*)realloc(this->frameBufferIds, sizeof(GLuint) * requiredNum);
 	this->textureIds = (GLuint*)realloc(this->textureIds, sizeof(GLuint) * requiredNum);
-	this->numFrameBuffers = requiredNum;
 	for (size_t i = this->numFrameBuffers; i < requiredNum; i++)
 	{
 		this->CreateFramebuffer(i);
 	}
-
+	this->numFrameBuffers = requiredNum;
 }
 
 void RenderSystem::CreateFramebuffer(size_t index)
@@ -323,7 +322,7 @@ void RenderSystem::CreateFramebuffer(size_t index)
 	// set up geometry frame buffer and geometry textures
 	glBindFramebuffer(GL_FRAMEBUFFER, this->frameBufferIds[index]);
 	glBindTexture(GL_TEXTURE_2D, this->textureIds[index]);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->windowWidth, this->windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->renderWidth, this->renderHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->textureIds[index], 0);
