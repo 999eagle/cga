@@ -50,6 +50,7 @@ bool App::Initialize(int width, int height, const char* title, bool useVr)
 	if (!glfwInit())
 		return false;
 	this->glfwInitialized = true;
+	this->vr = NULL;
 	if (useVr)
 	{
 		vr::EVRInitError error = vr::EVRInitError::VRInitError_None;
