@@ -78,3 +78,23 @@ void vrMatrixToGlm(glm::tmat4x4<T, P> & glmMat, const vr::HmdMatrix34_t & vrMat)
 		vrMat.m[0][2], vrMat.m[1][2], vrMat.m[2][2], (T)0.0,
 		vrMat.m[0][3], vrMat.m[1][3], vrMat.m[2][3], (T)1.0);
 }
+
+template<typename T, glm::precision P>
+void vrVectorToGlm(glm::tvec2<T, P> & glmVec, const vr::HmdVector2_t & vrVec)
+{
+	glmVec = glm::tvec2<T, P>(vrVec.v[0], vrVec.v[1]);
+}
+
+template<typename T, glm::precision P>
+void vrVectorToGlm(glm::tvec3<T, P> & glmVec, const vr::HmdVector3_t & vrVec)
+{
+	glmVec = glm::tvec3<T, P>(vrVec.v[0], vrVec.v[1], vrVec.v[2]);
+}
+
+template<typename T, glm::precision P>
+void vrVectorToGlm(glm::tvec4<T, P> & glmVec, const vr::HmdVector4_t & vrVec)
+{
+	glmVec = glm::tvec4<T, P>(vrVec.v[0], vrVec.v[1], vrVec.v[2], vrVec.v[3]);
+}
+
+std::string GetTrackedDeviceString(vr::IVRSystem * vr, vr::TrackedDeviceIndex_t index, vr::TrackedDeviceProperty prop, vr::TrackedPropertyError * error = NULL);

@@ -15,6 +15,8 @@
 #include "CollisionShapes.h"
 
 #include "Scripts\CameraInputScript.h"
+#include "Scripts\VRDeviceScript.h"
+
 #include "Common\util.h"
 
 App* App::currentApp = NULL;
@@ -126,6 +128,8 @@ void App::LoadContent()
 		leftControllerEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_ControllerLeft);
 		auto leftControllerTransform = leftControllerEntity->GetComponent<ECS::Components::TransformComponent>();
 		leftControllerTransform->SetParent(camRootTransform);
+		leftControllerEntity->AddComponent<ECS::Components::ScriptComponent>();
+		leftControllerEntity->GetComponent<ECS::Components::ScriptComponent>()->AddScript<Scripts::VRDeviceScript>(this->vr, 3);
 		auto rightControllerEntity = new ECS::Entity();
 		rightControllerEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_ControllerRight);
 		auto rightControllerTransform = rightControllerEntity->GetComponent<ECS::Components::TransformComponent>();

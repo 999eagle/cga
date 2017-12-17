@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="Common\util.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="ECS\Component.cpp" />
     <ClCompile Include="ECS\Entity.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="PostProcessing\PostProcessing.h" />
     <ClInclude Include="QuadRenderer.h" />
     <ClInclude Include="Scripts\CameraInputScript.h" />
+    <ClInclude Include="Scripts\VRDeviceScript.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>

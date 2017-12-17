@@ -67,6 +67,9 @@
     <ClCompile Include="ECS\Systems\InputSystem.cpp">
       <Filter>ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Common\util.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ShaderStructures.h">
@@ -148,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="ECS\Components\VRTrackedDeviceComponent.h">
       <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\VRDeviceScript.h">
+      <Filter>Scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
