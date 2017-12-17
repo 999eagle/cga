@@ -121,6 +121,14 @@ void App::LoadContent()
 		this->world->AddEntity(hmdEntity);
 		this->world->AddEntity(leftEyeEntity);
 		this->world->AddEntity(rightEyeEntity);
+
+		auto leftControllerEntity = new ECS::Entity();
+		leftControllerEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_ControllerLeft);
+		auto rightControllerEntity = new ECS::Entity();
+		rightControllerEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_ControllerRight);
+
+		this->world->AddEntity(leftControllerEntity);
+		this->world->AddEntity(rightControllerEntity);
 	}
 	else
 	{

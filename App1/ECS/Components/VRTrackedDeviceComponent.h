@@ -7,6 +7,8 @@ enum VRTrackedDevice
 	VRTrackedDevice_Hmd,
 	VRTrackedDevice_EyeLeft,
 	VRTrackedDevice_EyeRight,
+	VRTrackedDevice_ControllerLeft,
+	VRTrackedDevice_ControllerRight,
 };
 
 namespace ECS{ namespace Components {
