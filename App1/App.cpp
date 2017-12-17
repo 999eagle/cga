@@ -124,8 +124,12 @@ void App::LoadContent()
 
 		auto leftControllerEntity = new ECS::Entity();
 		leftControllerEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_ControllerLeft);
+		auto leftControllerTransform = leftControllerEntity->GetComponent<ECS::Components::TransformComponent>();
+		leftControllerTransform->SetParent(camRootTransform);
 		auto rightControllerEntity = new ECS::Entity();
 		rightControllerEntity->AddComponent<ECS::Components::VRTrackedDeviceComponent>(VRTrackedDevice_ControllerRight);
+		auto rightControllerTransform = rightControllerEntity->GetComponent<ECS::Components::TransformComponent>();
+		rightControllerTransform->SetParent(camRootTransform);
 
 		this->world->AddEntity(leftControllerEntity);
 		this->world->AddEntity(rightControllerEntity);
