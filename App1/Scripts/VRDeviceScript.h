@@ -47,7 +47,7 @@ namespace Scripts
 				{
 					std::vector<VertexType> vertices;
 					std::vector<GLuint> indices;
-					for (auto i = 0; i < model->unVertexCount; i++)
+					for (auto i = 0u; i < model->unVertexCount; i++)
 					{
 						VertexType vertex;
 						vrVectorToGlm(vertex.position, model->rVertexData[i].vPosition);
@@ -55,7 +55,7 @@ namespace Scripts
 						vertex.texCoord = glm::vec2(model->rVertexData[i].rfTextureCoord[0], model->rVertexData[i].rfTextureCoord[1]);
 						vertices.push_back(vertex);
 					}
-					for (auto i = 0; i < model->unTriangleCount * 3; i += 3)
+					for (auto i = 0u; i < model->unTriangleCount * 3; i += 3)
 					{
 						indices.push_back(model->rIndexData[i + 0]);
 						indices.push_back(model->rIndexData[i + 1]);

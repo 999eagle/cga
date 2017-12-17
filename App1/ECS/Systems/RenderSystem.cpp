@@ -108,8 +108,8 @@ void RenderSystem::Update(ECS::World & world, const AppTime & time)
 	else
 	{
 		this->EnsureFramebuffers(cameras.size());
-		size_t i = 0;
-		int leftEyeTex = -1, rightEyeTex = -1;
+		auto i = 0;
+		auto leftEyeTex = -1, rightEyeTex = -1;
 		for (auto it : cameras)
 		{
 			this->RenderWithCamera(time, it.first, this->frameBufferIds[i], meshes, ambientLights, pointLights, directionalLights, shadowMapLights);

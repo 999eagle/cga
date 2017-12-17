@@ -26,7 +26,7 @@ void BlurRenderer::BlurCurrentlyBoundTexture(int count)
 	this->postProcessing->BindFramebuffer();
 	this->blurShader->Apply();
 	glViewport(0, 0, this->width, this->height);
-	glUniform2f(this->shaderViewportSizeLocation, width, height);
+	glUniform2f(this->shaderViewportSizeLocation, (GLfloat)width, (GLfloat)height);
 	for (int i = 0; i < count; i++)
 	{
 		glGenerateMipmap(GL_TEXTURE_2D);
